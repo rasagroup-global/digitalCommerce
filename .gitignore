@@ -1,0 +1,27 @@
+# WordPress core
+/wp-content/upgrade/
+/wp-includes/
+
+# But keep these essentials
+!/wp-content/
+!/wp-content/themes/
+!/wp-content/plugins!
+/wp-content/uploads/
+
+# Database
+/.sql/
+
+# Env
+/.env*
+!/.env.example
+
+# Logs
+/logs/
+/*.log
+
+# Dummy
+/Dockerfile*
+/Makefile
+
+# OS
+.DS_Store
