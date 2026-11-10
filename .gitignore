@@ -5,8 +5,8 @@
 # But keep these essentials
 !/wp-content/
 !/wp-content/themes/
-!/wp-content/plugins!
-/wp-content/uploads/
+!/wp-content/plugins
+!/wp-content/uploads
 
 # Database
 /.sql/
