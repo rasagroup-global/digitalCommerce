@@ -1,0 +1,14 @@
+[mysqld]
+; ── Rasa MariaDB tuning (server 2GB, shared) ──
+innodb_buffer_pool_size = 256M
+max_connections = 50
+
+; Retention binlog 30 hari (sesuai policy log)
+binlog_expire_logs_seconds = 2592000
+log_bin = mysql-bin
+binlog_format = ROW
+
+; Slow query (audit)
+slow_query_log = 1
+slow_query_log_file = /var/lib/mysql/slow.log
+long_query_time = 2

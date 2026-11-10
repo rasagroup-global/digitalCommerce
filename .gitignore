@@ -1,27 +1,36 @@
-# WordPress core
-/wp-content/upgrade/
+# ═══════════════════════════════════════════════════════════
+# digitalCommerce — WooCommerce (shop-dev.rasakopi.coffee)
+# Stack: WordPress (PHP 8.5) + WooCommerce + MariaDB
+# Live Shopify (shop.rasakopi.coffee) TIDAK disentuh.
+# ═══════════════════════════════════════════════════════════
+
+## Secrets — JANGAN commit
+.env
+
+## WordPress core — di-install via image/WP-CLI, bukan dari repo
+/wp-admin/
+/wp-content/index.php
+/wp-content/languages
+/wp-content/plugins/index.php
+/wp-content/themes/index.php
 /wp-includes/
+/index.php
+/license.txt
+/readme.html
+/wp-*.php
+/xmlrpc.php
+wp-config.php
 
-# But keep these essentials
-!/wp-content/
-!/wp-content/themes/
-!/wp-content/plugins
-!/wp-content/uploads
+## User content (di Docker volume, bukan repo)
+/wp-content/uploads/
+/wp-content/cache/
 
-# Database
-/.sql/
-
-# Env
-/.env*
-!/.env.example
-
-# Logs
+## Logs
+*.log
 /logs/
-/*.log
 
-# Dummy
-/Dockerfile*
-/Makefile
-
-# OS
+## OS / editor
 .DS_Store
+Thumbs.db
+.idea/
+.vscode/
