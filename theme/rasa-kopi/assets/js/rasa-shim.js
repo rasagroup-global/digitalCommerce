@@ -44,7 +44,10 @@
 	window.Shopify.CountryProvinceSelector = window.Shopify.CountryProvinceSelector || function () {};
 	window.Shopify.ModelViewerUI = window.Shopify.ModelViewerUI || {};
 	window.Shopify.PaymentButton = window.Shopify.PaymentButton || { init: function () {} };
-	window.Shopify.actions = window.Shopify.actions || {};
+	window.Shopify.actions = window.Shopify.actions || {
+		openCart: { configure: function () {} },
+		updateCart: { configure: function () {} }
+	};
 
 	// Dawn StickyHeader (on-scroll-up: hide saat scroll down, muncul saat scroll up)
 	if (!customElements.get('sticky-header')) {

@@ -864,6 +864,8 @@ class SlideshowComponent extends SliderComponent {
           { once: true }
         );
       });
+    } else {
+      this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     }
 
     if (this.slider.getAttribute('data-autoplay') === 'true') this.setAutoPlay();

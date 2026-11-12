@@ -187,6 +187,13 @@ html[lang^="en"] .card-information .price::after {
 }
 
 /* ===== Slide-out Cart Drawer ===== */
+.drawer:not(.active),
+.rasa-cart-drawer:not(.active) {
+	display: none !important;
+	visibility: hidden !important;
+	pointer-events: none !important;
+	opacity: 0 !important;
+}
 .rasa-cart-drawer {
 	visibility: hidden;
 	pointer-events: none;
@@ -313,4 +320,14 @@ html[lang^="en"] .card-information .price::after {
 	font-size: 1.5rem;
 	letter-spacing: 0.08rem;
 	margin-top: 1.2rem;
+}
+
+/* Hide TranslatePress default floating language switcher */
+.trp-language-switcher,
+#trp-floater-ls,
+.trp-floating-language-switcher,
+[data-no-translation] #trp-floater-ls {
+	display: none !important;
+	visibility: hidden !important;
+	pointer-events: none !important;
 }
