@@ -11,6 +11,7 @@ function initPsSlider(root) {
 	var swatches = section.querySelectorAll('.ps-swatch');
 	var names = section.querySelectorAll('.ps-name');
 	var titleLink = section.querySelector('.ps-title-link');
+	var descEl = section.querySelector('.product-spotlight__description');
 	var priceEl = section.querySelector('.product-spotlight__price');
 	var detailsLink = section.querySelector('.ps-details-link');
 	var form = section.querySelector('.product-spotlight__form');
@@ -30,6 +31,10 @@ function initPsSlider(root) {
 		if (titleLink) {
 			titleLink.textContent = d.title;
 			if (coming) { titleLink.removeAttribute('href'); } else { titleLink.href = d.url; }
+		}
+		if (descEl) {
+			descEl.textContent = d.description || '';
+			descEl.style.display = d.description ? '' : 'none';
 		}
 		if (priceEl) { priceEl.textContent = d.price || ''; priceEl.style.display = (!coming && d.price) ? '' : 'none'; }
 		if (detailsLink) detailsLink.href = d.url;

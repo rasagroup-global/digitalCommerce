@@ -1,33 +1,34 @@
-
-  .section--padding { padding-top:px; padding-bottom:px; }
-  @media screen and (min-width: 750px) { .section--padding { padding-top:px; padding-bottom:px; } }
-  #ComingSoon-.rasa-cs__head { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 2.4rem; }
-  #ComingSoon-.rasa-cs__heading { margin: 0; font-weight: 700; }
-  #ComingSoon-.rasa-cs__sub { margin: 0; font-size: 1.5rem; color: rgba(var(--color-foreground), .75); max-width: 62rem; }
-  #ComingSoon-.rasa-cs__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; }
-  @media screen and (min-width: 990px) { #ComingSoon-.rasa-cs__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.6rem; } }
-  #ComingSoon-.rasa-cs__card { display: flex; flex-direction: column; background: rgb(var(--color-background)); }
-  #ComingSoon-.rasa-cs__media { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: #efeee9; }
-  #ComingSoon-.rasa-cs__img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  #ComingSoon-.rasa-cs__badge { position: absolute; left: 1rem; bottom: 1rem; background: #231f20; color: #edc0ae; font-size: 1.15rem; font-weight: 600; letter-spacing: .06em; padding: .45rem 1rem; border-radius: 2rem; }
-  #ComingSoon-.rasa-cs__info { display: flex; flex-direction: column; align-items: flex-start; gap: .4rem; padding: 1.2rem .4rem .4rem; flex-grow: 1; }
-  #ComingSoon-.rasa-cs__label { font-size: 1.1rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(var(--color-foreground), .65); }
-  #ComingSoon-.rasa-cs__title { margin: 0; font-size: 1.5rem; font-weight: 500; line-height: 1.3; }
-  #ComingSoon-.rasa-cs__btn { margin-top: auto; padding-top: .6rem; font-size: 1.3rem; font-weight: 600; color: #9a5d48; text-decoration: underline; text-underline-offset: .3rem; min-height: 44px; display: inline-flex; align-items: center; }
-  #ComingSoon-.rasa-cs__btn:hover { color: #7a4636; }
-  #ComingSoon-.rasa-cs__form-wrap { margin-top: 3.2rem; scroll-margin-top: 120px; }
-  #ComingSoon-.rasa-cs__form { display: grid; grid-template-columns: 1fr; gap: 2rem; padding: 2.8rem 2.4rem; background: #231f20; color: #f9f3ef; border-radius: 6px; }
-  @media screen and (min-width: 990px) { #ComingSoon-.rasa-cs__form { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 4rem; padding: 3.6rem 4rem; } }
-  #ComingSoon-.rasa-cs__form-title { margin: 0 0 .6rem; color: #f9f3ef; font-size: 2.2rem; font-weight: 700; }
-  #ComingSoon-.rasa-cs__form-text p { margin: 0; color: #d9cfca; font-size: 1.45rem; line-height: 1.5; }
-  #ComingSoon-.rasa-cs__fields { display: flex; flex-direction: column; gap: 1.2rem; }
-  #ComingSoon-.rasa-cs__field { display: flex; flex-direction: column; gap: .4rem; }
-  #ComingSoon-.rasa-cs__field label { font-size: 1.2rem; letter-spacing: .08em; text-transform: uppercase; color: #d9cfca; }
-  #ComingSoon-.rasa-cs__select, #ComingSoon-.rasa-cs__input { min-height: 4.6rem; padding: 0 1.2rem; border: 1px solid #6b615e; border-radius: 4px; background: #f9f3ef; color: #231f20; font-size: 1.5rem; font-family: inherit; }
-  #ComingSoon-.rasa-cs__consent { display: flex; gap: .8rem; align-items: flex-start; font-size: 1.25rem; line-height: 1.45; color: #d9cfca; cursor: pointer; }
-  #ComingSoon-.rasa-cs__consent input { margin-top: .25rem; width: 1.8rem; height: 1.8rem; flex-shrink: 0; accent-color: #edc0ae; }
-  #ComingSoon-.rasa-cs__consent a { color: #edc0ae; }
-  #ComingSoon-.rasa-cs__submit { background: #edc0ae; color: #231f20; border: 0; min-height: 4.8rem; font-weight: 700; letter-spacing: .06em; border-radius: 4px; }
-  #ComingSoon-.rasa-cs__submit:after { display: none; }
-  #ComingSoon-.rasa-cs__thanks { margin: 0; font-size: 1.6rem; color: #edc0ae; align-self: center; }
-  #ComingSoon-.rasa-cs__error { color: #ffb4a8; font-size: 1.3rem; }
+  #ComingSoon-rasa .rasa-cs__head { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 2.4rem; }
+  #ComingSoon-rasa .rasa-cs__heading { margin: 0; font-weight: 700; }
+  #ComingSoon-rasa .rasa-cs__sub { margin: 0; font-size: 1.5rem; color: rgba(var(--color-foreground), .75); max-width: 62rem; }
+  #ComingSoon-rasa .rasa-cs__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; }
+  @media screen and (min-width: 990px) { #ComingSoon-rasa .rasa-cs__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.6rem; } }
+  #ComingSoon-rasa .rasa-cs__card { display: flex; flex-direction: column; background: rgb(var(--color-background)); }
+  #ComingSoon-rasa .rasa-cs__media { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: #efeee9; border-radius: 4px; }
+  #ComingSoon-rasa .rasa-cs__img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.35s ease; }
+  #ComingSoon-rasa .rasa-cs__card:hover .rasa-cs__img { transform: scale(1.03); }
+  #ComingSoon-rasa .rasa-cs__badge { position: absolute; left: 1rem; bottom: 1rem; background: #231f20; color: #edc0ae; font-size: 1.15rem; font-weight: 600; letter-spacing: .06em; padding: .45rem 1rem; border-radius: 2rem; text-transform: uppercase; }
+  #ComingSoon-rasa .rasa-cs__info { display: flex; flex-direction: column; align-items: flex-start; gap: .4rem; padding: 1.2rem .4rem .4rem; flex-grow: 1; }
+  #ComingSoon-rasa .rasa-cs__label { font-size: 1.1rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(var(--color-foreground), .65); }
+  #ComingSoon-rasa .rasa-cs__title { margin: 0; font-size: 1.5rem; font-weight: 500; line-height: 1.3; }
+  #ComingSoon-rasa .rasa-cs__btn { margin-top: auto; padding-top: .6rem; font-size: 1.3rem; font-weight: 600; color: #9a5d48; text-decoration: underline; text-underline-offset: .3rem; min-height: 44px; display: inline-flex; align-items: center; }
+  #ComingSoon-rasa .rasa-cs__btn:hover { color: #7a4636; }
+  #ComingSoon-rasa .rasa-cs__form-wrap { margin-top: 3.2rem; scroll-margin-top: 120px; }
+  #ComingSoon-rasa .rasa-cs__form { display: grid; grid-template-columns: 1fr; gap: 2rem; padding: 2.8rem 2.4rem; background: #231f20; color: #f9f3ef; border-radius: 6px; }
+  @media screen and (min-width: 990px) { #ComingSoon-rasa .rasa-cs__form { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 4rem; padding: 3.6rem 4rem; align-items: center; } }
+  #ComingSoon-rasa .rasa-cs__form-title { margin: 0 0 .6rem; color: #f9f3ef; font-size: 2.2rem; font-weight: 700; }
+  #ComingSoon-rasa .rasa-cs__form-text p { margin: 0; color: #d9cfca; font-size: 1.45rem; line-height: 1.5; }
+  #ComingSoon-rasa .rasa-cs__fields { display: flex; flex-direction: column; gap: 1.2rem; }
+  #ComingSoon-rasa .rasa-cs__field { display: flex; flex-direction: column; gap: .4rem; }
+  #ComingSoon-rasa .rasa-cs__field label { font-size: 1.2rem; letter-spacing: .08em; text-transform: uppercase; color: #d9cfca; }
+  #ComingSoon-rasa .rasa-cs__select, #ComingSoon-rasa .rasa-cs__input { min-height: 4.6rem; padding: 0 1.2rem; border: 1px solid rgba(237, 192, 174, 0.35); border-radius: 4px; background: rgba(255, 255, 255, 0.06); color: #f9f3ef; font-size: 1.5rem; font-family: inherit; }
+  #ComingSoon-rasa .rasa-cs__select:focus, #ComingSoon-rasa .rasa-cs__input:focus { outline: none; border-color: #edc0ae; }
+  #ComingSoon-rasa .rasa-cs__select option { background: #231f20; color: #f9f3ef; }
+  #ComingSoon-rasa .rasa-cs__consent { display: flex; gap: .8rem; align-items: flex-start; font-size: 1.25rem; line-height: 1.45; color: #d9cfca; cursor: pointer; }
+  #ComingSoon-rasa .rasa-cs__consent input { margin-top: .25rem; width: 1.8rem; height: 1.8rem; flex-shrink: 0; accent-color: #edc0ae; }
+  #ComingSoon-rasa .rasa-cs__consent a { color: #edc0ae; }
+  #ComingSoon-rasa .rasa-cs__submit { background: #edc0ae; color: #231f20; border: 1px solid #edc0ae; min-height: 4.8rem; padding: 0 2.8rem; font-size: 1.4rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-radius: 4px; cursor: pointer; align-self: flex-start; }
+  #ComingSoon-rasa .rasa-cs__submit:hover { background: #f3cfc0; border-color: #f3cfc0; }
+  #ComingSoon-rasa .rasa-cs__submit:after { display: none; }
+  #ComingSoon-rasa .rasa-cs__thanks { margin: 0; font-size: 1.6rem; color: #edc0ae; align-self: center; }
+  #ComingSoon-rasa .rasa-cs__error { color: #ffb4a8; font-size: 1.3rem; }

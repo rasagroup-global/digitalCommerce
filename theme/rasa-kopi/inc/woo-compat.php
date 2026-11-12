@@ -60,3 +60,21 @@ add_filter( 'woocommerce_add_to_cart_redirect', function () {
 add_filter( 'woocommerce_cart_is_empty', function ( $empty ) {
 	return $empty;
 } );
+
+/* ------------------------------------------------------------------ *
+ * Shop archive (/shop/) — hanya tampilkan produk aktif berharga (> 0)
+ * agar placeholder "Bald im Shop" (0,00 €) tidak muncul di katalog
+ * ------------------------------------------------------------------ */
+add_action( 'woocommerce_product_query', function ( $q ) {
+	if ( is_admin() ) return;
+	if ( is_shop() && ! is_search() ) {
+		$meta_query = (array) $q->get( 'meta_query' );
+		$meta_query[] = array(
+			'key'     => '_price',
+			'value'   => 0,
+			'compare' => '>',
+			'type'    => 'NUMERIC',
+		);
+		$q->set( 'meta_query', $meta_query );
+	}
+} );

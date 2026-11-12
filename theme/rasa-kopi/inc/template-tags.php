@@ -142,32 +142,21 @@ function rasa_product_card( $product, $args = array() ) {
 	/**
 	 * Helper: srcset + src untuk 1 attachment id.
 	 */
-	$srcset_for = function ( $img_id ) use ( $sizes ) {
-		if ( empty( $img_id ) ) return array( 'srcset' => '', 'src' => '', 'alt' => '', 'w' => 1300, 'h' => 1600 );
-		$parts = array();
-		$widths = array( 165, 360, 533, 720, 940, 1066 );
-		// [0]=url [1]=w [2]=h [3]=is_intermediate
+	$srcset_for = function ( $img_id ) {
+		if ( empty( $img_id ) ) return array( 'srcset' => '', 'src' => '', 'alt' => '', 'w' => 600, 'h' => 738 );
+		$card = wp_get_attachment_image_src( $img_id, 'rasa-card' );
 		$full = wp_get_attachment_image_src( $img_id, 'full' );
-		$full_w = $full ? (int) $full[1] : 0;
-		$full_h = $full ? (int) $full[2] : 0;
-		foreach ( $widths as $wd ) {
-			$srcs = wp_get_attachment_image_src( $img_id, $wd );
-			// hanya pakai ukuran yang memang lebih lebar dari target (jangan upscale)
-			if ( $srcs && (int) $srcs[1] >= $wd ) {
-				$parts[] = $srcs[0] . ' ' . (int) $srcs[1] . 'w';
-			}
+		$primary = $card ?: $full;
+		$srcset = wp_get_attachment_image_srcset( $img_id, 'rasa-card' );
+		if ( ! $srcset && $primary ) {
+			$srcset = $primary[0] . ' ' . (int) $primary[1] . 'w';
 		}
-		if ( $full ) {
-			$parts[] = $full[0] . ' ' . $full_w . 'w';
-		}
-		$src = wp_get_attachment_image_src( $img_id, 533 );
-		if ( ! $src ) $src = $full ?: array( '', 0, 0 );
 		return array(
-			'srcset' => implode( ',', $parts ),
-			'src'    => $src[0],
+			'srcset' => (string) $srcset,
+			'src'    => $primary ? $primary[0] : '',
 			'alt'    => trim( (string) wp_get_attachment_caption( $img_id ) ) ?: get_post_meta( $img_id, '_wp_attachment_image_alt', true ),
-			'w'      => $full_w ?: 1300,
-			'h'      => $full_h ?: 1600,
+			'w'      => $primary ? (int) $primary[1] : 600,
+			'h'      => $primary ? (int) $primary[2] : 738,
 		);
 	};
 
@@ -242,12 +231,13 @@ function rasa_featured_collection( $args = array() ) {
 		'padding_top'       => 44,
 		'padding_bottom'    => 36,
 		'color_scheme'      => 'scheme-2',
+		'order'             => 'DESC',
 	) );
 
 	if ( ! $a['collection'] ) return;
 	$cat = get_term_by( 'slug', $a['collection'], 'product_cat' );
 	$cat_id = $cat ? $cat->term_id : 0;
-	$products = $cat_id ? rasa_get_products_by_cat( $cat_id, $a['products_to_show'] ) : array();
+	$products = $cat_id ? rasa_get_products_by_cat( $cat_id, $a['products_to_show'], $a['order'] ) : array();
 
 	ob_start();
 	?>
@@ -341,7 +331,7 @@ function rasa_product_card_placeholder() {
  * Ambil produk dari category (limit). $cat bisa slug atau term_id.
  * NOTE: wc_get_products 'category' param = SLUG (bukan term_id).
  */
-function rasa_get_products_by_cat( $cat, $limit = 4 ) {
+function rasa_get_products_by_cat( $cat, $limit = 4, $order = 'DESC' ) {
 	if ( ! function_exists( 'WC' ) ) return array();
 	$slug = is_numeric( $cat ) ? get_term_field( 'slug', (int) $cat, 'product_cat' ) : $cat;
 	$loop = wc_get_products( array(
@@ -349,7 +339,7 @@ function rasa_get_products_by_cat( $cat, $limit = 4 ) {
 		'status'    => 'publish',
 		'limit'     => (int) $limit,
 		'orderby'   => 'date',
-		'order'     => 'DESC',
+		'order'     => strtoupper( $order ) === 'ASC' ? 'ASC' : 'DESC',
 		'return'    => 'objects',
 	) );
 	return is_array( $loop ) ? $loop : array();

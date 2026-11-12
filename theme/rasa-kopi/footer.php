@@ -91,12 +91,23 @@ $legal_menu  = rasa_footer_menu_items( 'footer-legal' );
 
 			<div class="footer__copyright caption">
 				<small class="copyright__content">
-					&copy; <?php echo esc_html( date_i18n( 'Y' ) ); ?>, <a href="<?php echo esc_url( home_url( '/' ) ); ?>" title=""><?php bloginfo( 'name' ); ?></a>
+					&copy; <?php echo esc_html( date_i18n( 'Y' ) ); ?>, <a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="">Rasa Kopi</a>
 				</small>
 			</div>
 		</div>
 	</div>
 </footer>
+
+<div class="rasa-legal-bar color-scheme-2 gradient">
+	<div class="rasa-legal-bar__inner page-width">
+		<a
+			href="https://connect.haendlerbund.de/widerrufsformular/shop-rasakopi-coffee/01M4VA27MEKAAG52YF6EFSKX7K"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="rasa-legal-bar__button"
+		>Vertrag widerrufen</a>
+	</div>
+</div>
 
 <?php wp_footer(); ?>
 </body>

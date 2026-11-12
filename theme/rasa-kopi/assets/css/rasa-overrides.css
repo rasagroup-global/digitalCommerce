@@ -63,3 +63,64 @@ details-disclosure > details { position: relative; }
 @media screen and (min-width: 990px) {
 	.announcement-bar-slider { width: 60%; }
 }
+
+/* ===== Hide closed search modal completely (prevent stray close button) ===== */
+details-modal > details:not([open]) > .search-modal {
+	display: none !important;
+}
+
+/* ===== Collection header row (title left, Alle anzeigen right) ===== */
+.collection__title.title-wrapper {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
+/* ===== Force neutral black/inherit price color over WooCommerce green ===== */
+.price .woocommerce-Price-amount {
+	color: inherit;
+}
+
+/* ===== VAT & Shipping note under product card price ===== */
+.card-information .price::after {
+	content: 'inkl. MwSt., zzgl. Versandkosten';
+	display: block;
+	font-size: 1.1rem;
+	line-height: 1.3;
+	color: rgba(var(--color-foreground), 0.6);
+	margin-top: 0.2rem;
+	font-weight: 400;
+}
+
+/* ===== Legal Revocation Bar (bottom of footer) ===== */
+.rasa-legal-bar {
+	border-top: 1px solid rgba(0, 0, 0, 0.12);
+	padding: 1.6rem 0;
+}
+.rasa-legal-bar__inner {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.rasa-legal-bar__button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 4.4rem;
+	padding: 0 2.4rem;
+	background-color: #000000;
+	color: #edc0ae;
+	border: 1px solid #edc0ae;
+	font-size: 1.4rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-decoration: none;
+	cursor: pointer;
+	transition: opacity 0.15s ease;
+}
+.rasa-legal-bar__button:hover {
+	opacity: 0.85;
+	color: #edc0ae;
+}
