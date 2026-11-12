@@ -1,0 +1,65 @@
+/* ------------------------------------------------------------------ *
+ * rasa-overrides.css — adjustments WordPress/WooCommerce untuk tema Rasa
+ * (Dawn base CSS di assets/css/* sudah 1:1; file ini hanya patch WP)
+ * ------------------------------------------------------------------ */
+
+/* Woo/WP kadang nambahin class ekstra di body — pastikan layout tetap */
+body {
+	margin: 0;
+}
+
+/* Woo: halaman single-product pakai wrapper kita sendiri,
+   blokir layout bawaan Woo yang bisa conflict */
+.woocommerce ul.products {
+	margin: 0;
+}
+
+/* Woo: pastikan tombol tambah-keranjang di card punya hover seperti Shopify */
+.product-card__badge--sold-out {
+	background: var(--color-background-2);
+	color: var(--color-foreground);
+}
+
+/* Woo: harga dengan strikethrough (Sale) */
+.woocommerce-Price-amount {
+	font-variant-numeric: tabular-nums;
+}
+.woocommerce-Price-amount del {
+	color: var(--color-foreground-2);
+	text-decoration: line-through;
+	margin-right: 0.5em;
+}
+.woocommerce-Price-amount ins {
+	text-decoration: none;
+}
+
+/* WP admin bar di dev: jangan ganggu fixed header kalau user logged-in */
+.admin-bar {
+	/* admin bar WP itu fixed top:0; header kita di bawahnya, biarin default */
+}
+
+/* ===== Sync dengan live base.css (rules yang hilang dari porting) ===== */
+.cart-count-bubble:empty { display: none; }
+.cart-count-bubble {
+	position: absolute;
+	background-color: rgb(var(--color-button));
+	color: rgb(var(--color-button-text));
+	height: 1.7rem;
+	width: 1.7rem;
+	border-radius: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: .9rem;
+	bottom: .8rem;
+	left: 2.2rem;
+	line-height: calc(1 + .1 / var(--font-body-scale));
+}
+header-menu > details,
+details-disclosure > details { position: relative; }
+.utility-bar__grid .announcement-bar-slider,
+.announcement-bar-slider,
+.announcement-bar-slider .slider { width: 100%; }
+@media screen and (min-width: 990px) {
+	.announcement-bar-slider { width: 60%; }
+}

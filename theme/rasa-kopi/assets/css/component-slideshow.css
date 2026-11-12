@@ -1,0 +1,617 @@
+slideshow-component {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+slideshow-component .slideshow.banner {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  margin: 0;
+  gap: 0;
+  overflow-y: hidden;
+}
+
+.slideshow__slide {
+  padding: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  visibility: visible;
+}
+
+@media screen and (max-width: 749px) {
+  .slideshow--placeholder.banner--mobile-bottom.banner--adapt_image .slideshow__media,
+  .slideshow--placeholder.banner--adapt_image:not(.banner--mobile-bottom) {
+    height: 28rem;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .slideshow--placeholder.banner--adapt_image {
+    height: 56rem;
+  }
+}
+
+.slideshow__text.banner__box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 54.5rem;
+}
+
+.slideshow__text > * {
+  max-width: 100%;
+}
+
+@media screen and (max-width: 749px) {
+  slideshow-component.page-width .slideshow__text {
+    border-right: var(--text-boxes-border-width) solid rgba(var(--color-foreground), var(--text-boxes-border-opacity));
+    border-left: var(--text-boxes-border-width) solid rgba(var(--color-foreground), var(--text-boxes-border-opacity));
+  }
+
+  .banner--mobile-bottom .slideshow__text.banner__box {
+    max-width: 100%;
+  }
+
+  .banner--mobile-bottom .slideshow__text-wrapper {
+    flex-grow: 1;
+  }
+
+  .banner--mobile-bottom .slideshow__text.banner__box {
+    height: 100%;
+  }
+
+  .banner--mobile-bottom .slideshow__text .button {
+    flex-grow: 0;
+  }
+
+  .slideshow__text.slideshow__text-mobile--left {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .slideshow__text.slideshow__text-mobile--right {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .slideshow__text.slideshow__text--left {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .slideshow__text.slideshow__text--right {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+.slideshow:not(.banner--mobile-bottom) .slideshow__text-wrapper {
+  height: 100%;
+}
+
+@media screen and (min-width: 750px) {
+  .slideshow__text-wrapper.banner__content {
+    height: 100%;
+    padding: 5rem;
+  }
+}
+
+.slideshow__controls {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  border: none;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Show indicator controls ONLY when hovering over the slideshow (same as navigation buttons) */
+slideshow-component:hover .slideshow__controls {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.slideshow__controls .slider-button,
+.slideshow__autoplay {
+  display: none !important;
+}
+
+/* Floating Prev & Next Nav Buttons on Left and Right of image */
+slideshow-component .slider-button--prev,
+slideshow-component .slider-button--next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 4.8rem;
+  height: 4.8rem;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, background-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+slideshow-component .slider-button--prev {
+  left: 2rem;
+}
+
+slideshow-component .slider-button--next {
+  right: 2rem;
+}
+
+slideshow-component .slider-button .icon,
+slideshow-component .slider-button svg {
+  width: 1.4rem;
+  height: 1.4rem;
+  fill: currentColor;
+  color: currentColor;
+}
+
+/* Show nav buttons ONLY when hovering over the slider area */
+slideshow-component:hover .slider-button--prev,
+slideshow-component:hover .slider-button--next {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+slideshow-component .slider-button--prev:hover,
+slideshow-component .slider-button--next:hover {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #121212;
+}
+
+slideshow-component .slider-button--prev:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+
+slideshow-component .slider-button--next:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+
+@media screen and (max-width: 749px) {
+  slideshow-component .slider-button--prev,
+  slideshow-component .slider-button--next {
+    display: none !important;
+  }
+}
+
+/* Modern thin line indicator bars */
+.slider-counter__link {
+  padding: 0.8rem 0.35rem !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.slider-counter__link--dots .dot {
+  width: 2.8rem !important;
+  height: 0.25rem !important;
+  border-radius: 0.2rem !important;
+  border: none !important;
+  background-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) !important;
+  transform: none !important;
+  transition: all 0.25s ease !important;
+}
+
+.slider-counter__link--dots:hover .dot {
+  background-color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.slider-counter__link--active.slider-counter__link--dots .dot {
+  width: 4.2rem !important;
+  background-color: #ffffff !important;
+  border: none !important;
+  transform: none !important;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.5) !important;
+}
+
+@media screen and (min-width: 750px) {
+  .slideshow__controls {
+    position: absolute;
+  }
+}
+
+slideshow-component:not(.page-width) .slider-buttons {
+  border-right: 0;
+  border-left: 0;
+}
+
+.slideshow__control-wrapper {
+  display: flex;
+}
+
+.slideshow__autoplay {
+  position: absolute;
+  right: 0;
+  border-left: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media screen and (max-width: 749px) {
+  slideshow-component.page-width .slideshow__autoplay {
+    right: 1.5rem;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .slideshow__autoplay.slider-button {
+    position: inherit;
+    margin-left: 0.6rem;
+    padding: 0 0 0 0.6rem;
+    border-left: 0.1rem solid rgba(var(--color-foreground), 0.08);
+  }
+}
+
+.slideshow__autoplay .icon.icon-play,
+.slideshow__autoplay .icon.icon-pause {
+  display: block;
+  position: absolute;
+  opacity: 1;
+  transform: scale(1);
+  transition: transform 150ms ease, opacity 150ms ease;
+  width: 0.8rem;
+  height: 1.2rem;
+}
+
+.slideshow__autoplay .icon.icon-play {
+  height: 1rem;
+}
+
+.slideshow__autoplay path {
+  fill: rgba(var(--color-foreground), 0.75);
+}
+
+.slideshow__autoplay:hover path {
+  fill: rgb(var(--color-foreground));
+}
+
+@media screen and (forced-colors: active) {
+  .slideshow__autoplay path,
+  .slideshow__autoplay:hover path {
+    fill: CanvasText;
+  }
+}
+
+.slideshow__autoplay:hover .svg-wrapper {
+  transform: scale(1.1);
+}
+
+.slideshow__autoplay--paused .icon-pause,
+.slideshow__autoplay:not(.slideshow__autoplay--paused) .icon-play {
+  visibility: hidden;
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+/* ==========================================================================
+   Split Layout Banners (Hero Slideshow & Image Banner)
+   Title/Description Left, CTA Button Right
+   ========================================================================== */
+.slideshow--split-layout .slideshow__box--split,
+.banner--split-layout .banner__box--split {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Base button style for split layout CTA */
+.slideshow--split-layout .slideshow__box--split .banner__buttons .button,
+.banner--split-layout .banner__box--split .banner__buttons .button {
+  background-color: #ffffff !important;
+  color: #121212 !important;
+  border: 1px solid #ffffff !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25) !important;
+  transition: all 0.2s ease !important;
+}
+
+.slideshow--split-layout .slideshow__box--split .banner__buttons .button:hover,
+.banner--split-layout .banner__box--split .banner__buttons .button:hover {
+  background-color: #f0f0f0 !important;
+  color: #121212 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+}
+
+@media screen and (min-width: 750px) {
+  .slideshow--split-layout .slideshow__text-wrapper.banner__content,
+  .banner--split-layout .banner__content {
+    align-items: flex-end !important;
+    justify-content: flex-start !important;
+    padding: 3rem 5rem 6.5rem 5rem !important;
+  }
+
+  .slideshow--split-layout .slideshow__box--split,
+  .banner--split-layout .banner__box--split {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .slideshow--split-layout .slideshow__text-content,
+  .banner--split-layout .banner__text-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+    max-width: 60%;
+    z-index: 2;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    gap: 0.8rem;
+  }
+
+  .slideshow--split-layout .slideshow__text-content .banner__heading,
+  .banner--split-layout .banner__text-content .banner__heading {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.6rem !important;
+    margin: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    text-align: left !important;
+  }
+
+  .slideshow--split-layout .slideshow__text-content .banner__heading p,
+  .slideshow--split-layout .slideshow__text-content .banner__heading:not(:has(p)),
+  .banner--split-layout .banner__text-content .banner__heading p,
+  .banner--split-layout .banner__text-content .banner__heading:not(:has(p)) {
+    display: inline-block !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    background-color: rgba(20, 20, 20, 0.88) !important;
+    color: #ffffff !important;
+    padding: 0.5rem 1.6rem 0.6rem 1.6rem !important;
+    margin: 0 !important;
+    border-radius: 0.3rem !important;
+    line-height: 1.25 !important;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .slideshow--split-layout .slideshow__text-content .banner__heading p strong,
+  .banner--split-layout .banner__text-content .banner__heading p strong {
+    color: #ffffff !important;
+  }
+
+  .slideshow--split-layout .slideshow__text-content .banner__text,
+  .banner--split-layout .banner__text-content .banner__text {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0.2rem 0 0 0 !important;
+    text-align: left !important;
+  }
+
+  .slideshow--split-layout .slideshow__text-content .banner__text p,
+  .banner--split-layout .banner__text-content .banner__text p {
+    display: inline-block !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    background-color: rgba(20, 20, 20, 0.88) !important;
+    color: #ffffff !important;
+    padding: 0.5rem 1.4rem !important;
+    margin: 0 !important;
+    border-radius: 0.3rem !important;
+    line-height: 1.4 !important;
+    font-size: 1.4rem !important;
+    font-weight: 600 !important;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .slideshow--split-layout .slideshow__text-content .banner__text p strong,
+  .slideshow--split-layout .slideshow__text-content .banner__text p em,
+  .banner--split-layout .banner__text-content .banner__text p strong,
+  .banner--split-layout .banner__text-content .banner__text p em {
+    color: #ffffff !important;
+  }
+
+  .slideshow--split-layout .slideshow__box--split .banner__buttons,
+  .banner--split-layout .banner__box--split .banner__buttons {
+    display: flex !important;
+    margin-left: auto !important;
+    margin-top: 0 !important;
+    align-self: center !important;
+    justify-content: flex-end !important;
+    z-index: 2;
+  }
+
+  .slideshow--split-layout .slideshow__controls {
+    bottom: 2.2rem;
+    z-index: 4;
+  }
+}
+
+/* ==========================================================================
+   Mobile Split Layout (Compact, Top-Left aligned to reveal background image)
+   ========================================================================== */
+@media screen and (max-width: 749px) {
+  /* Give banners enough vertical breathing room on mobile */
+  .slideshow--split-layout .slideshow.banner--large:not(.banner--mobile-bottom):not(.banner--adapt) .slideshow__media,
+  .slideshow--split-layout .slideshow.banner--large:not(.banner--mobile-bottom):not(.banner--adapt) .banner__content {
+    min-height: 45rem !important;
+  }
+
+  .banner--split-layout.banner--medium:not(.banner--mobile-bottom):not(.banner--adapt) .banner__media,
+  .banner--split-layout.banner--medium:not(.banner--mobile-bottom):not(.banner--adapt) .banner__content {
+    min-height: 38rem !important;
+  }
+
+  /* Position content neatly at bottom-left as requested */
+  .slideshow--split-layout .slideshow__text-wrapper.banner__content {
+    align-items: flex-end !important;
+    justify-content: flex-start !important;
+    padding: 1.5rem 1.6rem 3.6rem 1.6rem !important;
+  }
+
+  .banner--split-layout .banner__content {
+    align-items: flex-end !important;
+    justify-content: flex-start !important;
+    padding: 1.5rem 1.6rem 2.4rem 1.6rem !important;
+  }
+
+  .slideshow--split-layout .slideshow__box--split,
+  .banner--split-layout .banner__box--split {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 0.5rem !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .slideshow--split-layout .slideshow__text-content,
+  .banner--split-layout .banner__text-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+    width: 100% !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    gap: 0.4rem !important;
+  }
+
+  .slideshow--split-layout .slideshow__text-content .banner__heading,
+  .banner--split-layout .banner__text-content .banner__heading {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.35rem !important;
+    margin: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    text-align: left !important;
+  }
+
+  /* Compact, punchy headline badges */
+  .slideshow--split-layout .slideshow__text-content .banner__heading,
+  .banner--split-layout .banner__text-content .banner__heading,
+  .slideshow--split-layout .slideshow__text-content .banner__heading p,
+  .slideshow--split-layout .slideshow__text-content .banner__heading:not(:has(p)),
+  .banner--split-layout .banner__text-content .banner__heading p,
+  .banner--split-layout .banner__text-content .banner__heading:not(:has(p)) {
+    display: inline-block !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    background-color: rgba(20, 20, 20, 0.88) !important;
+    color: #ffffff !important;
+    font-size: 2.2rem !important;
+    font-weight: 700 !important;
+    padding: 0.3rem 0.85rem 0.35rem 0.85rem !important;
+    margin: 0 !important;
+    border-radius: 0.35rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.01em !important;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .slideshow--split-layout .slideshow__text-content .banner__heading p strong,
+  .banner--split-layout .banner__text-content .banner__heading p strong {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+  }
+
+  .slideshow--split-layout .slideshow__text-content .banner__text,
+  .banner--split-layout .banner__text-content .banner__text {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0.15rem 0 0 0 !important;
+    text-align: left !important;
+  }
+
+  /* Sleek, readable description badge */
+  .slideshow--split-layout .slideshow__text-content .banner__text p,
+  .banner--split-layout .banner__text-content .banner__text p {
+    display: inline-block !important;
+    width: fit-content !important;
+    max-width: 88% !important;
+    background-color: rgba(20, 20, 20, 0.88) !important;
+    color: #ffffff !important;
+    padding: 0.25rem 0.75rem !important;
+    margin: 0 !important;
+    border-radius: 0.35rem !important;
+    font-size: 1.15rem !important;
+    font-weight: 500 !important;
+    line-height: 1.35 !important;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .slideshow--split-layout .slideshow__text-content .banner__text p strong,
+  .slideshow--split-layout .slideshow__text-content .banner__text p em,
+  .banner--split-layout .banner__text-content .banner__text p strong,
+  .banner--split-layout .banner__text-content .banner__text p em {
+    color: #ffffff !important;
+  }
+
+  /* Compact primary CTA button */
+  .slideshow--split-layout .slideshow__box--split .banner__buttons,
+  .banner--split-layout .banner__box--split .banner__buttons {
+    display: flex !important;
+    width: auto !important;
+    justify-content: flex-start !important;
+    margin-top: 0.4rem !important;
+  }
+
+  .slideshow--split-layout .slideshow__box--split .banner__buttons .button,
+  .banner--split-layout .banner__box--split .banner__buttons .button {
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    padding: 0.75rem 1.6rem !important;
+    min-height: 3.6rem !important;
+    min-width: auto !important;
+  }
+
+  .slideshow--split-layout .slideshow__controls {
+    bottom: 0.8rem !important;
+    z-index: 4;
+  }
+}
+

@@ -26,6 +26,7 @@ resource limits. Nginx men-block PHP di `wp-content/uploads/` (anti webshell).
 │   └── db.cnf                  # MariaDB tuning (buffer pool 256M, binlog 30d)
 ├── conf/nginx/shop-woo.conf    # nginx internal (security headers, cache, anti-webshell)
 ├── scripts/first-run.sh        # bootstrap idempotent (WP-CLI: core, Woo, Wordfence)
+├── theme/rasa-kopi/            # custom theme (port Shopify "Rasa" → Woo, markup Dawn)
 └── .gitignore
 ```
 
@@ -73,3 +74,37 @@ Trafik masuk: `rasa-shared-proxy` (0.0.0.0:80/443) → `shop-woo-nginx:80`
 - DB binlog retention 30 hari, slow query log aktif untuk audit.
 - SSL untuk `shop-dev.rasakopi.coffee` di-issues via ACME webroot
   (`/var/www/RASA/INFRA/certbot/www`) oleh proxy utama.
+
+
+## Custom theme — rasa-kopi
+
+Port theme Shopify **"Rasa"** (live: `shop.rasakopi.coffee`) ke WordPress/WooCommerce dengan markup pixel-faithful (konvensi class Dawn). Source of truth di repo: `theme/rasa-kopi/`.
+
+Di server, theme aktif tinggal di Docker volume:
+`/var/lib/docker/volumes/wordpress-woo_wp_content/_data/wp-content/themes/rasa-kopi`
+
+### Deploy update theme (dari checkout repo)
+
+```bash
+# 1. pull repo
+cd /var/www/RASA/wordpress-woo && git pull --ff-only origin main
+
+# 2. sync ke volume (JANGAN docker cp — bikin root:root 600, web user tak bisa baca)
+VOL=/var/lib/docker/volumes/wordpress-woo_wp_content/_data/wp-content/themes/rasa-kopi
+rsync -a --delete theme/rasa-kopi/ $VOL/
+
+# 3. fix ownership/permissions
+docker exec shop-woo-web chown -R www-data:www-data $VOL
+docker exec shop-woo-web find $VOL -type f -exec chmod 644 {} \;
+docker exec shop-woo-web find $VOL -type d -exec chmod 755 {} \;
+
+# 4. validasi
+docker exec shop-woo-web php -l $VOL/functions.php
+curl -s -o /dev/null -w "%{http_code}\n" https://shop-dev.rasakopi.coffee/
+```
+
+### Pitfall penting
+- **`docker cp` = permission root:root 600** → PHP fatal/blank page. Selalu rsync + chown/chmod, atau `docker exec chown` setelah docker cp.
+- **Cache busting**: bump `RASA_VERSION` di `theme/rasa-kopi/functions.php` kalau ubah CSS/JS, atau hard-reload browser.
+- Header (logo 190x45, nav inline-flex, marquee 3 pesan uppercase, language selector `<localization-form>` driven `assets/js/localization-form.js`) sudah A/B verified vs live.
+- TODO homepage: section "Neuheiten" & "Bald im Shop" masih dummy — belum query produk real di DB Woo. Single product page masih markup core Woo, belum port layout Dawn.
