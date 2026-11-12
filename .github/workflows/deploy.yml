@@ -1,0 +1,87 @@
+name: Deploy Rasa WooCommerce Theme
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  deploy-dev:
+    name: Deploy to Dev (shop-dev.rasakopi.coffee)
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Pull & sync theme on Dev VPS
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEV_SSH_HOST }}
+          username: ${{ secrets.DEV_SSH_USER }}
+          key: ${{ secrets.DEV_SSH_KEY }}
+          port: ${{ secrets.DEV_SSH_PORT || 22 }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            APP_DIR="/var/www/RASA/wordpress-woo"
+            WP_MOUNT=$(docker inspect -f '{{range .Mounts}}{{if eq .Destination "/var/www/html"}}{{.Source}}{{end}}{{end}}' shop-woo-web)
+            VOL_THEME="$WP_MOUNT/wp-content/themes/rasa-kopi"
+            CTR_THEME="/var/www/html/wp-content/themes/rasa-kopi"
+
+            cd "$APP_DIR"
+            git fetch origin dev
+            git checkout dev
+            git reset --hard origin/dev
+
+            mkdir -p "$VOL_THEME"
+            rsync -a --delete theme/rasa-kopi/ "$VOL_THEME/"
+
+            docker exec shop-woo-web chown -R www-data:www-data "$CTR_THEME"
+            docker exec shop-woo-web find "$CTR_THEME" -type f -exec chmod 644 {} +
+            docker exec shop-woo-web find "$CTR_THEME" -type d -exec chmod 755 {} +
+            docker exec shop-woo-web php -l "$CTR_THEME/functions.php"
+
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://shop-dev.rasakopi.coffee/)
+            echo "Dev healthcheck HTTP: $HTTP_CODE"
+            [ "$HTTP_CODE" = "200" ]
+
+  deploy-prod:
+    name: Deploy to Prod (shop.rasakopi.coffee)
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Pull & sync theme on Prod VPS
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.PROD_SSH_HOST }}
+          username: ${{ secrets.PROD_SSH_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          port: ${{ secrets.PROD_SSH_PORT || 22 }}
+          script_stop: true
+          env:
+            PROD_APP_DIR: ${{ secrets.PROD_APP_DIR }}
+          script: |
+            set -euo pipefail
+            APP_DIR="${PROD_APP_DIR:-/var/www/RASA/wordpress-woo}"
+            WP_MOUNT=$(docker inspect -f '{{range .Mounts}}{{if eq .Destination "/var/www/html"}}{{.Source}}{{end}}{{end}}' shop-woo-web)
+            VOL_THEME="$WP_MOUNT/wp-content/themes/rasa-kopi"
+            CTR_THEME="/var/www/html/wp-content/themes/rasa-kopi"
+
+            cd "$APP_DIR"
+            git fetch origin main
+            git checkout main
+            git reset --hard origin/main
+
+            mkdir -p "$VOL_THEME"
+            rsync -a --delete theme/rasa-kopi/ "$VOL_THEME/"
+
+            docker exec shop-woo-web chown -R www-data:www-data "$CTR_THEME"
+            docker exec shop-woo-web find "$CTR_THEME" -type f -exec chmod 644 {} +
+            docker exec shop-woo-web find "$CTR_THEME" -type d -exec chmod 755 {} +
+            docker exec shop-woo-web php -l "$CTR_THEME/functions.php"
+
