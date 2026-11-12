@@ -419,7 +419,7 @@ $render_spotlight( '2', $ps_items_2, 'right' );
 <style data-shopify>#Banner-rasa-merch::after { opacity: 0.1; }</style>
 <div id="Banner-rasa-merch" class="banner banner--content-align-center banner--content-align-mobile-center banner--medium banner--desktop-transparent scroll-trigger animate--fade-in">
 	<div class="banner__media media scroll-trigger animate--fade-in">
-		<img src="<?php echo esc_url( $sec . '/MERCH.png' ); ?>" alt="" width="2500" height="2000" loading="lazy" sizes="100vw">
+		<img src="<?php echo esc_url( $sec . '/MERCH.png' ); ?>" alt="" width="2500" height="2000" loading="lazy" decoding="async" sizes="100vw">
 	</div>
 	<div class="banner__content banner__content--middle-center page-width scroll-trigger animate--slide-in">
 		<div class="banner__box content-container content-container--full-width-mobile color-scheme-3 gradient">

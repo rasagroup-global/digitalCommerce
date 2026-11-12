@@ -45,6 +45,12 @@ jobs:
             docker exec shop-woo-web find "$CTR_THEME" -type d -exec chmod 755 {} +
             docker exec shop-woo-web php -l "$CTR_THEME/functions.php"
 
+            # Pastikan plugin multilingual TranslatePress terpasang & aktif
+            if docker exec shop-woo-web test -s /usr/local/bin/wp; then
+              docker exec shop-woo-web php -d open_basedir= -d disable_functions= /usr/local/bin/wp plugin is-installed translatepress-multilingual --allow-root || \
+                docker exec shop-woo-web php -d open_basedir= -d disable_functions= /usr/local/bin/wp plugin install translatepress-multilingual --activate --allow-root || true
+            fi
+
             HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://shop-dev.rasakopi.coffee/)
             echo "Dev healthcheck HTTP: $HTTP_CODE"
             [ "$HTTP_CODE" = "200" ]
@@ -82,4 +88,10 @@ jobs:
             docker exec shop-woo-web find "$CTR_THEME" -type f -exec chmod 644 {} +
             docker exec shop-woo-web find "$CTR_THEME" -type d -exec chmod 755 {} +
             docker exec shop-woo-web php -l "$CTR_THEME/functions.php"
+
+            # Pastikan plugin multilingual TranslatePress terpasang & aktif
+            if docker exec shop-woo-web test -s /usr/local/bin/wp; then
+              docker exec shop-woo-web php -d open_basedir= -d disable_functions= /usr/local/bin/wp plugin is-installed translatepress-multilingual --allow-root || \
+                docker exec shop-woo-web php -d open_basedir= -d disable_functions= /usr/local/bin/wp plugin install translatepress-multilingual --activate --allow-root || true
+            fi
 

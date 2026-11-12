@@ -51,9 +51,9 @@ function rasa_price_html( $product, $args = array() ) {
 	$show_compare  = ! empty( $args['show_compare_at_price'] );
 	$on_sale       = $product->is_on_sale();
 
-	// wc_price() sudah render simbol (mis. "29,00 €") — jangan tambah kode "EUR" lagi (live site = simbol saja)
+	// Format harga persis Shopify live: "€79,00 EUR"
 	$fmt = function ( $v ) {
-		return wc_price( (float) $v );
+		return '<span class="woocommerce-Price-amount amount"><bdi>&euro;' . number_format( (float) $v, 2, ',', '.' ) . ' EUR</bdi></span>';
 	};
 
 	// Variable product: parent price kosong — pakai "Von" (min variation price), persis Dawn

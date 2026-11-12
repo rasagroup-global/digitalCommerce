@@ -66,6 +66,9 @@ WP plugin activate woocommerce || true
 echo "▸ Install Wordfence (security)..."
 WP plugin install wordfence --activate || true
 
+echo "▸ Install TranslatePress (multilingual DE/EN)..."
+WP plugin install translatepress-multilingual --activate || true
+
 echo "▸ WooCommerce settings (IDR)..."
 WP option update woocommerce_currency 'IDR'
 WP option update woocommerce_currency_pos 'left'

@@ -11,9 +11,50 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'RASA_VERSION', '1.0.1' );
+define( 'RASA_VERSION', '1.0.2' );
 define( 'RASA_DIR', get_template_directory() );
 define( 'RASA_URI', get_template_directory_uri() );
+
+/* ------------------------------------------------------------------ *
+ * Language helper (cookie rasa_lang + integrasi TranslatePress bila aktif)
+ * ------------------------------------------------------------------ */
+function rasa_current_lang() {
+	if ( isset( $_COOKIE['rasa_lang'] ) && in_array( $_COOKIE['rasa_lang'], array( 'de', 'en' ), true ) ) {
+		return $_COOKIE['rasa_lang'];
+	}
+	$req = isset( $_SERVER['REQUEST_URI'] ) ? (string) wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
+	if ( strpos( $req, '/en/' ) === 0 || $req === '/en' ) {
+		return 'en';
+	}
+	return 'de';
+}
+
+function rasa_handle_locale_switch() {
+	if ( $_SERVER['REQUEST_METHOD'] !== 'POST' || empty( $_POST['locale_code'] ) ) {
+		return;
+	}
+	$lang = sanitize_text_field( wp_unslash( $_POST['locale_code'] ) );
+	if ( ! in_array( $lang, array( 'de', 'en' ), true ) ) {
+		return;
+	}
+	setcookie( 'rasa_lang', $lang, time() + 30 * DAY_IN_SECONDS, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, is_ssl(), false );
+	$_COOKIE['rasa_lang'] = $lang;
+
+	$referer = wp_get_referer() ?: home_url( '/' );
+	// Jika TranslatePress aktif, arahkan ke prefix /en/ atau root /
+	if ( class_exists( 'TRP_Translate_Press' ) ) {
+		$path = wp_parse_url( $referer, PHP_URL_PATH ) ?: '/';
+		$path = preg_replace( '#^/en(/|$)#', '/', $path );
+		if ( $lang === 'en' ) {
+			$referer = home_url( '/en' . ( $path === '/' ? '/' : $path ) );
+		} else {
+			$referer = home_url( $path );
+		}
+	}
+	wp_safe_redirect( $referer );
+	exit;
+}
+add_action( 'init', 'rasa_handle_locale_switch' );
 
 /* ------------------------------------------------------------------ *
  * Setup

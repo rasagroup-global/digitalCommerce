@@ -77,6 +77,47 @@ details-modal > details:not([open]) > .search-modal {
 	flex-wrap: wrap;
 	gap: 1rem;
 }
+.collection__title .title {
+	font-weight: 700;
+}
+
+/* ===== Skeleton shimmer preloader & smooth image fade-in ===== */
+@keyframes rasa-shimmer {
+	0% { background-position: -200% 0; }
+	100% { background-position: 200% 0; }
+}
+.card__media,
+.rasa-cs__media,
+.product-spotlight__media,
+.rasa-pdp-gallery__item,
+.banner__media {
+	background: linear-gradient(90deg, #efeee9 25%, #f7f6f2 50%, #efeee9 75%);
+	background-size: 200% 100%;
+	animation: rasa-shimmer 1.4s ease-in-out infinite;
+}
+.card__media.is-loaded,
+.rasa-cs__media.is-loaded,
+.product-spotlight__media.is-loaded,
+.rasa-pdp-gallery__item.is-loaded,
+.banner__media.is-loaded {
+	animation: none;
+	background: #efeee9;
+}
+.card__media img,
+.rasa-cs__media img,
+.product-spotlight__media img,
+.rasa-pdp-gallery__item img,
+.banner__media img {
+	opacity: 0;
+	transition: opacity 0.35s ease;
+}
+.card__media img.is-loaded,
+.rasa-cs__media img.is-loaded,
+.product-spotlight__media img.is-loaded,
+.rasa-pdp-gallery__item img.is-loaded,
+.banner__media img.is-loaded {
+	opacity: 1;
+}
 
 /* ===== Force neutral black/inherit price color over WooCommerce green ===== */
 .price .woocommerce-Price-amount {

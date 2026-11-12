@@ -58,7 +58,7 @@ while ( have_posts() ) :
 
 					<div class="no-js-hidden" id="price-template" role="status" style="margin:1.2rem 0 .4rem;">
 						<div class="price price--large" style="font-size:1.8rem;line-height:2.7rem;letter-spacing:1.3px;color:#000;">
-							<?php echo wp_kses_post( $product->get_price_html() ); ?>
+							<?php echo rasa_price_html( $product ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 						</div>
 					</div>
 

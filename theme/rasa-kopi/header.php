@@ -118,10 +118,10 @@ $announcements = rasa_announcements();
 	.section-header {
 		position: sticky; /* fix z-index Safari (Dawn PR #2147) */
 		margin-bottom: 0px;
+		z-index: 4;
 	}
 	.header-wrapper {
-		position: sticky;
-		top: 0;
+		position: relative;
 		z-index: 4;
 	}
 	@media screen and (min-width: 750px) {
@@ -157,7 +157,8 @@ $announcements = rasa_announcements();
 </style>
 
 <!-- ===================== HEADER ===================== -->
-<div class="header-wrapper color-scheme-2 gradient header-wrapper--border-bottom">
+<div id="shopify-section-header" class="shopify-section section-header">
+<sticky-header data-sticky-type="on-scroll-up" class="header-wrapper color-scheme-2 gradient header-wrapper--border-bottom">
 	<header class="header header--middle-center header--mobile-center page-width header--has-menu header--has-account header--has-localizations">
 
 		<!-- Mobile Drawer (< 990px) -->
@@ -241,12 +242,13 @@ $announcements = rasa_announcements();
 		</nav>
 
 		<!-- Icons: language + search + account + cart -->
+		<?php $cur_lang = function_exists( 'rasa_current_lang' ) ? rasa_current_lang() : 'de'; ?>
 		<div class="header__icons header__icons--localization header-localization">
 			<!-- Language (markup persis live desktop HeaderLanguageForm) -->
 			<div class="desktop-localization-wrapper">
 				<localization-form class="small-hide medium-hide" data-prevent-hide>
 					<form method="post" action="<?php echo esc_url( home_url( '/' ) ); ?>" id="HeaderLanguageForm" class="localization-form">
-						<input type="hidden" name="locale_code" value="de" />
+						<input type="hidden" name="locale_code" value="<?php echo esc_attr( $cur_lang ); ?>" />
 						<div>
 							<h2 class="visually-hidden" id="HeaderLanguageLabel"><?php esc_html_e( 'Sprache', 'rasa-kopi' ); ?></h2>
 							<div class="disclosure">
@@ -256,25 +258,30 @@ $announcements = rasa_announcements();
 									aria-expanded="false"
 									aria-controls="HeaderLanguageList"
 									aria-describedby="HeaderLanguageLabel"
-									aria-label="<?php esc_attr_e( 'Deutsch', 'rasa-kopi' ); ?>"
-									title="<?php esc_attr_e( 'Deutsch', 'rasa-kopi' ); ?>"
-								><span><span class="rasa-flag" aria-hidden="true" style="display:inline-flex;align-items:center;vertical-align:middle;line-height:0"><svg viewBox="0 0 5 3" width="20" height="14" preserveAspectRatio="none" style="width:2rem;height:1.4rem;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15);display:block"><rect width="5" height="1" fill="#000"/><rect y="1" width="5" height="1" fill="#DD0000"/><rect y="2" width="5" height="1" fill="#FFCE00"/></svg></span>
+									aria-label="<?php echo $cur_lang === 'en' ? 'English' : 'Deutsch'; ?>"
+									title="<?php echo $cur_lang === 'en' ? 'English' : 'Deutsch'; ?>"
+								><span>
+								<?php if ( $cur_lang === 'en' ) : ?>
+									<span class="rasa-flag" aria-hidden="true" style="display:inline-flex;align-items:center;vertical-align:middle;line-height:0"><svg viewBox="0 0 60 30" width="20" height="14" preserveAspectRatio="none" style="width:2rem;height:1.4rem;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15);display:block"><clipPath id="rf-s-cur-en"><path d="M0,0 v30 h60 v-30 z"/></clipPath><clipPath id="rf-t-cur-en"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><g clip-path="url(#rf-s-cur-en)"><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#rf-t-cur-en)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></g></svg></span>
+								<?php else : ?>
+									<span class="rasa-flag" aria-hidden="true" style="display:inline-flex;align-items:center;vertical-align:middle;line-height:0"><svg viewBox="0 0 5 3" width="20" height="14" preserveAspectRatio="none" style="width:2rem;height:1.4rem;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15);display:block"><rect width="5" height="1" fill="#000"/><rect y="1" width="5" height="1" fill="#DD0000"/><rect y="2" width="5" height="1" fill="#FFCE00"/></svg></span>
+								<?php endif; ?>
 								</span>
 									<?php echo rasa_icon_raw( 'caret' ); ?>
 								</button>
 								<div class="disclosure__list-wrapper language-selector" hidden>
 									<ul id="HeaderLanguageList" role="list" class="disclosure__list list-unstyled">
 										<li class="disclosure__item" tabindex="-1">
-											<a class="link link--text disclosure__link caption-large focus-inset" href="#" hreflang="de" lang="de" aria-current="true" data-value="de" aria-label="<?php esc_attr_e( 'Deutsch', 'rasa-kopi' ); ?>" title="<?php esc_attr_e( 'Deutsch', 'rasa-kopi' ); ?>">
-												<span><svg xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-checkmark" viewBox="0 0 12 9"><path fill="currentColor" fill-rule="evenodd" d="M11.35.643a.5.5 0 0 1 .006.707l-6.77 6.886a.5.5 0 0 1-.719-.006L.638 4.845a.5.5 0 1 1 .724-.69l2.872 3.011 6.41-6.517a.5.5 0 0 1 .707-.006z" clip-rule="evenodd"/></svg></span><span style="display:inline-flex;align-items:center;gap:0.8rem">
+											<a class="link link--text disclosure__link caption-large focus-inset" href="#" hreflang="de" lang="de" <?php echo $cur_lang === 'de' ? 'aria-current="true"' : ''; ?> data-value="de" aria-label="Deutsch" title="Deutsch">
+												<span<?php echo $cur_lang !== 'de' ? ' class="visibility-hidden"' : ''; ?>><svg xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-checkmark" viewBox="0 0 12 9"><path fill="currentColor" fill-rule="evenodd" d="M11.35.643a.5.5 0 0 1 .006.707l-6.77 6.886a.5.5 0 0 1-.719-.006L.638 4.845a.5.5 0 1 1 .724-.69l2.872 3.011 6.41-6.517a.5.5 0 0 1 .707-.006z" clip-rule="evenodd"/></svg></span><span style="display:inline-flex;align-items:center;gap:0.8rem">
 													<span class="rasa-flag" aria-hidden="true" style="display:inline-flex;align-items:center;vertical-align:middle;line-height:0"><svg viewBox="0 0 5 3" width="20" height="14" preserveAspectRatio="none" style="width:2rem;height:1.4rem;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15);display:block"><rect width="5" height="1" fill="#000"/><rect y="1" width="5" height="1" fill="#DD0000"/><rect y="2" width="5" height="1" fill="#FFCE00"/></svg></span>
-													<?php esc_html_e( 'Deutsch', 'rasa-kopi' ); ?>
+													Deutsch
 												</span>
 											</a>
 										</li>
 										<li class="disclosure__item" tabindex="-1">
-											<a class="link link--text disclosure__link caption-large focus-inset" href="#" hreflang="en" lang="en" data-value="en" aria-label="English" title="English">
-												<span class="visibility-hidden"><svg xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-checkmark" viewBox="0 0 12 9"><path fill="currentColor" fill-rule="evenodd" d="M11.35.643a.5.5 0 0 1 .006.707l-6.77 6.886a.5.5 0 0 1-.719-.006L.638 4.845a.5.5 0 1 1 .724-.69l2.872 3.011 6.41-6.517a.5.5 0 0 1 .707-.006z" clip-rule="evenodd"/></svg></span><span style="display:inline-flex;align-items:center;gap:0.8rem">
+											<a class="link link--text disclosure__link caption-large focus-inset" href="#" hreflang="en" lang="en" <?php echo $cur_lang === 'en' ? 'aria-current="true"' : ''; ?> data-value="en" aria-label="English" title="English">
+												<span<?php echo $cur_lang !== 'en' ? ' class="visibility-hidden"' : ''; ?>><svg xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-checkmark" viewBox="0 0 12 9"><path fill="currentColor" fill-rule="evenodd" d="M11.35.643a.5.5 0 0 1 .006.707l-6.77 6.886a.5.5 0 0 1-.719-.006L.638 4.845a.5.5 0 1 1 .724-.69l2.872 3.011 6.41-6.517a.5.5 0 0 1 .707-.006z" clip-rule="evenodd"/></svg></span><span style="display:inline-flex;align-items:center;gap:0.8rem">
 													<span class="rasa-flag" aria-hidden="true" style="display:inline-flex;align-items:center;vertical-align:middle;line-height:0"><svg viewBox="0 0 60 30" width="20" height="14" preserveAspectRatio="none" style="width:2rem;height:1.4rem;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15);display:block"><clipPath id="rf-s-headerlanguage-lang-en-gb"><path d="M0,0 v30 h60 v-30 z"/></clipPath><clipPath id="rf-t-headerlanguage-lang-en-gb"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><g clip-path="url(#rf-s-headerlanguage-lang-en-gb)"><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#rf-t-headerlanguage-lang-en-gb)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></g></svg></span>
 													English
 												</span>
@@ -289,43 +296,45 @@ $announcements = rasa_announcements();
 			</div>
 			<!-- Search modal -->
 			<details-modal class="header__search">
-				<summary
-					class="header__icon header__icon--search header__icon--summary link focus-inset modal__toggle"
-					aria-haspopup="dialog"
-				>
-					<span class="svg-wrapper"><?php echo rasa_icon_raw( 'search' ); ?></span>
-					<span class="svg-wrapper header__icon-close"><?php echo rasa_icon_raw( 'close-small' ); ?></span>
-					<span class="visually-hidden"><?php esc_html_e( 'Suche', 'rasa-kopi' ); ?></span>
-				</summary>
-				<div class="search-modal modal__content gradient" id="SearchModal" role="dialog" aria-modal="true" aria-labelledby="SearchModalLabel" tabindex="-1">
-					<div class="modal-overlay"></div>
-					<div class="search-modal__content search-modal__content-bottom">
-						<span id="SearchModalLabel" class="visually-hidden"><?php esc_html_e( 'Suche', 'rasa-kopi' ); ?></span>
-						<form action="<?php echo esc_url( home_url( '/?s=' ) ); ?>" method="get" role="search" class="search search-modal__form">
-							<div class="field">
-								<input
-									id="Search-In-Modal"
-									class="search__input field__input"
-									type="search"
-									name="s"
-									aria-label="<?php esc_attr_e( 'Suche', 'rasa-kopi' ); ?>"
-									autocapitalize="off"
-									autocomplete="off"
-									autocorrect="off"
-									placeholder="<?php esc_attr_e( 'Produkte durchsuchen…', 'rasa-kopi' ); ?>"
-									required
-								>
-								<label class="field__label" for="Search-In-Modal"><?php esc_html_e( 'Suche', 'rasa-kopi' ); ?></label>
-								<button class="search__button field__button" aria-label="<?php esc_attr_e( 'Suche', 'rasa-kopi' ); ?>">
-									<span class="svg-wrapper"><?php echo rasa_icon_raw( 'search' ); ?></span>
-								</button>
-							</div>
-						</form>
-						<button type="button" class="search-modal__close-button modal__close-button link link--text focus-inset" aria-label="<?php esc_attr_e( 'Schließen', 'rasa-kopi' ); ?>">
-							<span class="svg-wrapper"><?php echo rasa_icon_raw( 'close' ); ?></span>
-						</button>
+				<details>
+					<summary
+						class="header__icon header__icon--search header__icon--summary link focus-inset modal__toggle"
+						aria-haspopup="dialog"
+					>
+						<span class="svg-wrapper"><?php echo rasa_icon_raw( 'search' ); ?></span>
+						<span class="svg-wrapper header__icon-close"><?php echo rasa_icon_raw( 'close-small' ); ?></span>
+						<span class="visually-hidden"><?php esc_html_e( 'Suche', 'rasa-kopi' ); ?></span>
+					</summary>
+					<div class="search-modal modal__content gradient" id="SearchModal" role="dialog" aria-modal="true" aria-labelledby="SearchModalLabel" tabindex="-1">
+						<div class="modal-overlay"></div>
+						<div class="search-modal__content search-modal__content-bottom">
+							<span id="SearchModalLabel" class="visually-hidden"><?php esc_html_e( 'Suche', 'rasa-kopi' ); ?></span>
+							<form action="<?php echo esc_url( home_url( '/?s=' ) ); ?>" method="get" role="search" class="search search-modal__form">
+								<div class="field">
+									<input
+										id="Search-In-Modal"
+										class="search__input field__input"
+										type="search"
+										name="s"
+										aria-label="<?php esc_attr_e( 'Suche', 'rasa-kopi' ); ?>"
+										autocapitalize="off"
+										autocomplete="off"
+										autocorrect="off"
+										placeholder="<?php esc_attr_e( 'Produkte durchsuchen…', 'rasa-kopi' ); ?>"
+										required
+									>
+									<label class="field__label" for="Search-In-Modal"><?php esc_html_e( 'Suche', 'rasa-kopi' ); ?></label>
+									<button class="search__button field__button" aria-label="<?php esc_attr_e( 'Suche', 'rasa-kopi' ); ?>">
+										<span class="svg-wrapper"><?php echo rasa_icon_raw( 'search' ); ?></span>
+									</button>
+								</div>
+							</form>
+							<button type="button" class="search-modal__close-button modal__close-button link link--text focus-inset" aria-label="<?php esc_attr_e( 'Schließen', 'rasa-kopi' ); ?>">
+								<span class="svg-wrapper"><?php echo rasa_icon_raw( 'close' ); ?></span>
+							</button>
+						</div>
 					</div>
-				</div>
+				</details>
 			</details-modal>
 
 			<!-- Account -->
@@ -351,6 +360,7 @@ $announcements = rasa_announcements();
 			</a>
 		</div>
 	</header>
+</sticky-header>
 </div>
 
 <main id="MainContent" class="content" role="main" tabindex="-1">
