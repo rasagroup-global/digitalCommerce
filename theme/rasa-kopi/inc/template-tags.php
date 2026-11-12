@@ -198,9 +198,10 @@ function rasa_product_card( $product, $args = array() ) {
 	echo '<a href="' . esc_url( $url ) . '" class="full-unstyled-link">' . esc_html( $title ) . '</a>';
 	echo '</h3></div>';
 	echo '<div class="card__badge bottom left"></div>';
-	echo '</div>';
+	echo '</div>'; // .card__content #1
+	echo '</div>'; // .card__inner
 
-	// card__content #2 (heading + info + price)
+	// card__content #2 (heading + info + price — sibling dari .card__inner)
 	echo '<div class="card__content">';
 	echo '<div class="card__information">';
 	echo '<h3 class="card__heading h5">';
@@ -210,9 +211,10 @@ function rasa_product_card( $product, $args = array() ) {
 	echo rasa_price_html( $product, array( 'show_compare_at_price' => true ) );
 	echo '</div></div>';
 	echo '<div class="card__badge bottom left"></div>';
-	echo '</div>';
+	echo '</div>'; // .card__content #2
 
-	echo '</div></div>';
+	echo '</div></div>'; // .card + .card-wrapper
+	return ob_get_clean();
 }
 
 /* ------------------------------------------------------------------ *
@@ -313,13 +315,13 @@ function rasa_product_card_placeholder() {
 					</div>
 					<div class="card__badge bottom left"></div>
 				</div>
-				<div class="card__content">
-					<div class="card__information">
-						<h3 class="card__heading h5"><a class="full-unstyled-link" href="#">Bald im Shop</a></h3>
-						<div class="card-information"><span class="caption-large light"></span></div>
-					</div>
-					<div class="card__badge bottom left"></div>
+			</div>
+			<div class="card__content">
+				<div class="card__information">
+					<h3 class="card__heading h5"><a class="full-unstyled-link" href="#">Bald im Shop</a></h3>
+					<div class="card-information"><span class="caption-large light"></span></div>
 				</div>
+				<div class="card__badge bottom left"></div>
 			</div>
 		</div>
 	</div>

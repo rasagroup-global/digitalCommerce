@@ -56,6 +56,11 @@ function rasa_handle_locale_switch() {
 }
 add_action( 'init', 'rasa_handle_locale_switch' );
 
+// Fallback Site Icon WordPress ke rasa-kopi-favicon.png bila belum diset di Customizer
+add_filter( 'get_site_icon_url', function ( $url ) {
+	return $url ?: RASA_URI . '/assets/img/sections/rasa-kopi-favicon.png';
+} );
+
 /* ------------------------------------------------------------------ *
  * Setup
  * ------------------------------------------------------------------ */
