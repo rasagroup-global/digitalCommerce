@@ -63,11 +63,9 @@ jobs:
           key: ${{ secrets.PROD_SSH_KEY }}
           port: ${{ secrets.PROD_SSH_PORT || 22 }}
           script_stop: true
-          env:
-            PROD_APP_DIR: ${{ secrets.PROD_APP_DIR }}
           script: |
             set -euo pipefail
-            APP_DIR="${PROD_APP_DIR:-/var/www/RASA/wordpress-woo}"
+            APP_DIR="${{ secrets.PROD_APP_DIR || '/var/www/RASA/wordpress-woo' }}"
             WP_MOUNT=$(docker inspect -f '{{range .Mounts}}{{if eq .Destination "/var/www/html"}}{{.Source}}{{end}}{{end}}' shop-woo-web)
             VOL_THEME="$WP_MOUNT/wp-content/themes/rasa-kopi"
             CTR_THEME="/var/www/html/wp-content/themes/rasa-kopi"
