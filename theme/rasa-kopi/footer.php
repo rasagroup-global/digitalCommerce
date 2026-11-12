@@ -48,7 +48,7 @@ $legal_menu  = rasa_footer_menu_items( 'footer-legal' );
 				</ul>
 			</div>
 			<div class="footer-block grid__item footer-block--menu scroll-trigger animate--slide-in" data-cascade style="--animation-order: 2;">
-				<h2 class="footer-block__heading inline-richtext">Rechtliches</h2>
+				<h2 class="footer-block__heading inline-richtext"><?php echo esc_html( rasa_tr( 'Rechtliches', 'Legal' ) ); ?></h2>
 				<ul class="footer-block__details-content list-unstyled">
 					<?php foreach ( $legal_menu as $item ) : ?>
 					<li>
@@ -70,7 +70,7 @@ $legal_menu  = rasa_footer_menu_items( 'footer-legal' );
 						<form method="post" action="<?php echo esc_url( home_url( '/' ) ); ?>" id="FooterLanguageForm" class="localization-form">
 							<input type="hidden" name="locale_code" value="<?php echo esc_attr( $cur_lang ); ?>" />
 							<div class="no-js-hidden">
-								<h2 class="caption-large text-body" id="FooterLanguageLabel">Sprache</h2>
+								<h2 class="caption-large text-body" id="FooterLanguageLabel"><?php echo esc_html( rasa_tr( 'Sprache', 'Language' ) ); ?></h2>
 								<div class="disclosure">
 									<button type="button" class="disclosure__button localization-form__select localization-selector link link--text caption-large" aria-expanded="false" aria-controls="FooterLanguageList" aria-describedby="FooterLanguageLabel" aria-label="<?php echo $cur_lang === 'en' ? 'English' : 'Deutsch'; ?>">
 										<?php if ( $cur_lang === 'en' ) : ?>
@@ -125,7 +125,37 @@ $legal_menu  = rasa_footer_menu_items( 'footer-legal' );
 			target="_blank"
 			rel="noopener noreferrer"
 			class="rasa-legal-bar__button"
-		>Vertrag widerrufen</a>
+		><?php echo esc_html( rasa_tr( 'Vertrag widerrufen', 'Cancel contract' ) ); ?></a>
+	</div>
+</div>
+
+<div id="RasaCartDrawer" class="drawer rasa-cart-drawer color-scheme-1 gradient" role="dialog" aria-modal="true" aria-label="<?php echo esc_attr( rasa_tr( 'Dein Warenkorb', 'Your Cart' ) ); ?>" aria-hidden="true">
+	<div class="cart-drawer__overlay" data-rasa-drawer-close></div>
+	<div class="drawer__inner" role="document">
+		<div class="drawer__header">
+			<h2 class="drawer__heading"><?php echo esc_html( rasa_tr( 'Dein Warenkorb', 'Your Cart' ) ); ?></h2>
+			<button type="button" class="drawer__close" data-rasa-drawer-close aria-label="<?php echo esc_attr( rasa_tr( 'Schließen', 'Close' ) ); ?>">
+				<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="icon icon-close" fill="none" viewBox="0 0 18 17" width="18" height="17"><path d="M.865 15.978a.5.5 0 00.707.707l7.433-7.431 7.579 7.282a.501.501 0 00.846-.37.5.5 0 00-.153-.351L9.712 8.546l7.417-7.416a.5.5 0 10-.707-.708L8.991 7.853 1.413.573a.5.5 0 10-.693.72l7.563 7.268-7.418 7.417z" fill="currentColor"/></svg>
+			</button>
+		</div>
+		<div class="rasa-cart-drawer__shipping" id="RasaCartShipping">
+			<?php echo esc_html( rasa_tr( 'Kostenloser Versand ab 59 € in Deutschland', 'Free shipping over €59 in Germany' ) ); ?>
+		</div>
+		<div class="drawer__contents rasa-cart-drawer__body" id="RasaCartDrawerBody"></div>
+		<div class="drawer__footer" id="RasaCartDrawerFooter" hidden>
+			<div class="cart-drawer__footer">
+				<div class="totals" role="status">
+					<h2 class="totals__total"><?php echo esc_html( rasa_tr( 'Geschätzte Gesamtkosten', 'Estimated total' ) ); ?></h2>
+					<p class="totals__total-value" id="RasaCartSubtotal"></p>
+				</div>
+				<small class="tax-note caption-large rte"><?php echo esc_html( rasa_tr( 'Inkl. MwSt. Rabatte und Versand werden beim Checkout berechnet.', 'Incl. VAT. Discounts and shipping calculated at checkout.' ) ); ?></small>
+			</div>
+			<div class="cart__ctas">
+				<a href="<?php echo esc_url( function_exists( 'wc_get_checkout_url' ) ? wc_get_checkout_url() : home_url( '/checkout/' ) ); ?>" class="cart__checkout-button button button--primary" id="RasaCartCheckoutBtn">
+					<?php echo esc_html( rasa_tr( 'Auschecken', 'Checkout' ) ); ?>
+				</a>
+			</div>
+		</div>
 	</div>
 </div>
 

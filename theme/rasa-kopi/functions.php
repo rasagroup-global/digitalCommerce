@@ -29,6 +29,17 @@ function rasa_current_lang() {
 	return 'de';
 }
 
+function rasa_tr( $de, $en ) {
+	return rasa_current_lang() === 'en' ? $en : $de;
+}
+
+add_filter( 'language_attributes', function ( $output ) {
+	if ( rasa_current_lang() === 'en' ) {
+		return preg_replace( '/lang="[^"]*"/', 'lang="en-US"', $output );
+	}
+	return $output;
+} );
+
 function rasa_handle_locale_switch() {
 	if ( $_SERVER['REQUEST_METHOD'] !== 'POST' || empty( $_POST['locale_code'] ) ) {
 		return;
@@ -41,15 +52,26 @@ function rasa_handle_locale_switch() {
 	$_COOKIE['rasa_lang'] = $lang;
 
 	$referer = wp_get_referer() ?: home_url( '/' );
-	// Jika TranslatePress aktif, arahkan ke prefix /en/ atau root /
+	$path    = wp_parse_url( $referer, PHP_URL_PATH ) ?: '/';
+	$path    = preg_replace( '#^/en(/|$)#', '/', $path );
+
+	// Hanya arahkan ke /en/ jika TranslatePress aktif DAN bahasa Inggris sudah dikonfigurasi di DB
+	$trp_has_en = false;
 	if ( class_exists( 'TRP_Translate_Press' ) ) {
-		$path = wp_parse_url( $referer, PHP_URL_PATH ) ?: '/';
-		$path = preg_replace( '#^/en(/|$)#', '/', $path );
-		if ( $lang === 'en' ) {
-			$referer = home_url( '/en' . ( $path === '/' ? '/' : $path ) );
-		} else {
-			$referer = home_url( $path );
+		$trp_settings = get_option( 'trp_settings', array() );
+		$langs = isset( $trp_settings['translation-languages'] ) ? (array) $trp_settings['translation-languages'] : array();
+		foreach ( $langs as $l ) {
+			if ( strpos( (string) $l, 'en' ) === 0 && count( $langs ) > 1 ) {
+				$trp_has_en = true;
+				break;
+			}
 		}
+	}
+
+	if ( $trp_has_en && $lang === 'en' ) {
+		$referer = home_url( '/en' . ( $path === '/' ? '/' : $path ) );
+	} else {
+		$referer = home_url( $path );
 	}
 	wp_safe_redirect( $referer );
 	exit;
@@ -59,6 +81,57 @@ add_action( 'init', 'rasa_handle_locale_switch' );
 // Fallback Site Icon WordPress ke rasa-kopi-favicon.png bila belum diset di Customizer
 add_filter( 'get_site_icon_url', function ( $url ) {
 	return $url ?: RASA_URI . '/assets/img/sections/rasa-kopi-favicon.png';
+} );
+
+/* ------------------------------------------------------------------ *
+ * Auto-convert upload JPEG/PNG (Media Library & WooCommerce) ke WebP
+ * ------------------------------------------------------------------ */
+add_filter( 'image_editor_output_format', function ( $formats ) {
+	$formats['image/jpeg'] = 'image/webp';
+	$formats['image/png']  = 'image/webp';
+	return $formats;
+} );
+
+add_filter( 'wp_editor_set_quality', function ( $quality, $mime_type ) {
+	if ( 'image/webp' === $mime_type ) {
+		return 82;
+	}
+	return $quality;
+}, 10, 2 );
+
+add_filter( 'wp_handle_upload', function ( $upload ) {
+	if ( ! empty( $upload['error'] ) || empty( $upload['file'] ) || empty( $upload['type'] ) ) {
+		return $upload;
+	}
+	if ( ! in_array( $upload['type'], array( 'image/jpeg', 'image/png' ), true ) ) {
+		return $upload;
+	}
+	if ( ! function_exists( 'wp_image_editor_supports' ) || ! wp_image_editor_supports( array( 'mime_type' => 'image/webp' ) ) ) {
+		return $upload;
+	}
+
+	$editor = wp_get_image_editor( $upload['file'] );
+	if ( is_wp_error( $editor ) ) {
+		return $upload;
+	}
+
+	$editor->set_quality( 82 );
+	$info     = pathinfo( $upload['file'] );
+	$webp_abs = $info['dirname'] . '/' . $info['filename'] . '.webp';
+	$webp_abs = wp_unique_filename( $info['dirname'], basename( $webp_abs ) );
+	$webp_abs = $info['dirname'] . '/' . $webp_abs;
+
+	$saved = $editor->save( $webp_abs, 'image/webp' );
+	if ( is_wp_error( $saved ) || empty( $saved['path'] ) || ! file_exists( $saved['path'] ) ) {
+		return $upload;
+	}
+
+	@unlink( $upload['file'] );
+	$upload['file'] = $saved['path'];
+	$upload['url']  = trailingslashit( dirname( $upload['url'] ) ) . basename( $saved['path'] );
+	$upload['type'] = 'image/webp';
+
+	return $upload;
 } );
 
 /* ------------------------------------------------------------------ *
@@ -309,28 +382,106 @@ function rasa_cart_count() {
 }
 
 /* ------------------------------------------------------------------ *
- * AJAX: add to cart (bridge utk rasa-theme.js)
+ * AJAX: Cart Drawer & Add-to-Cart (tanpa redirect)
  * ------------------------------------------------------------------ */
+function rasa_cart_payload() {
+	WC()->cart->calculate_totals();
+	$items = array();
+	foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+		$product = $cart_item['data'] ?? null;
+		if ( ! $product || ! ( $product instanceof WC_Product ) ) continue;
+		$img_id  = $product->get_image_id() ?: $product->get_parent_id();
+		$img_url = wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' );
+		if ( ! $img_url && $product->get_parent_id() ) {
+			$parent = wc_get_product( $product->get_parent_id() );
+			if ( $parent ) $img_url = wp_get_attachment_image_url( $parent->get_image_id(), 'thumbnail' );
+		}
+		$var_parts = array();
+		if ( ! empty( $cart_item['variation'] ) && is_array( $cart_item['variation'] ) ) {
+			foreach ( $cart_item['variation'] as $k => $v ) {
+				if ( '' !== (string) $v ) {
+					$attr_label = wc_attribute_label( str_replace( 'attribute_', '', $k ) );
+					$var_parts[] = $attr_label . ': ' . strtoupper( (string) $v );
+				}
+			}
+		}
+		$items[] = array(
+			'key'        => $cart_item_key,
+			'product_id' => (int) $cart_item['product_id'],
+			'name'       => $product->get_title(),
+			'variation'  => implode( ' · ', $var_parts ),
+			'qty'        => (int) $cart_item['quantity'],
+			'price'      => rasa_price_html( $product ),
+			'line_total' => wp_strip_all_tags( html_entity_decode( WC()->cart->get_product_subtotal( $product, $cart_item['quantity'] ), ENT_QUOTES, 'UTF-8' ) ),
+			'image'      => $img_url ?: '',
+			'url'        => $product->get_permalink(),
+		);
+	}
+	return array(
+		'count'       => WC()->cart->get_cart_contents_count(),
+		'subtotal'    => wp_strip_all_tags( html_entity_decode( WC()->cart->get_cart_subtotal(), ENT_QUOTES, 'UTF-8' ) ),
+		'cartUrl'     => wc_get_cart_url(),
+		'checkoutUrl' => wc_get_checkout_url(),
+		'items'       => $items,
+	);
+}
+
 add_action( 'wp_ajax_rasa_add_to_cart', 'rasa_ajax_add_to_cart' );
 add_action( 'wp_ajax_nopriv_rasa_add_to_cart', 'rasa_ajax_add_to_cart' );
 function rasa_ajax_add_to_cart() {
 	check_ajax_referer( 'rasa-cart', 'nonce' );
 	if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
-		wp_send_json_error( array( 'message' => 'WooCommerce tidak aktif.' ) );
+		wp_send_json_error( array( 'message' => rasa_tr( 'Warenkorb nicht verfügbar.', 'Cart is unavailable.' ) ) );
 	}
-	$product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
-	$qty        = isset( $_POST['quantity'] ) ? max( 1, absint( $_POST['quantity'] ) ) : 1;
-	$variation  = isset( $_POST['variation'] ) ? wp_unslash( $_POST['variation'] ) : array();
+	$product_id   = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : ( isset( $_POST['add-to-cart'] ) ? absint( $_POST['add-to-cart'] ) : 0 );
+	$variation_id = isset( $_POST['variation_id'] ) ? absint( $_POST['variation_id'] ) : 0;
+	$qty          = isset( $_POST['quantity'] ) ? max( 1, absint( $_POST['quantity'] ) ) : 1;
+	$variation    = array();
+	foreach ( $_POST as $k => $v ) {
+		if ( strpos( (string) $k, 'attribute_' ) === 0 ) {
+			$variation[ sanitize_key( $k ) ] = sanitize_text_field( wp_unslash( $v ) );
+		}
+	}
 
-	$added = WC()->cart->add_to_cart( $product_id, $qty, 0, $variation );
+	$passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $qty, $variation_id, $variation );
+	$added = $passed_validation ? WC()->cart->add_to_cart( $product_id, $qty, $variation_id, $variation ) : false;
 	if ( ! $added ) {
-		wp_send_json_error( array( 'message' => 'Produk tidak bisa ditambahkan.' ) );
+		$errors = wc_get_notices( 'error' );
+		wc_clear_notices();
+		$msg = ! empty( $errors[0]['notice'] ) ? wp_strip_all_tags( $errors[0]['notice'] ) : rasa_tr( 'Produkt konnte nicht in den Warenkorb gelegt werden.', 'Could not add product to cart.' );
+		wp_send_json_error( array( 'message' => $msg ) );
 	}
-	wp_send_json_success( array(
-		'count'  => WC()->cart->get_cart_contents_count(),
-		'total'  => WC()->cart->get_cart_subtotal(),
-		'cartUrl'=> wc_get_cart_url(),
-	) );
+	wc_clear_notices();
+	wp_send_json_success( rasa_cart_payload() );
+}
+
+add_action( 'wp_ajax_rasa_get_cart', 'rasa_ajax_get_cart' );
+add_action( 'wp_ajax_nopriv_rasa_get_cart', 'rasa_ajax_get_cart' );
+function rasa_ajax_get_cart() {
+	check_ajax_referer( 'rasa-cart', 'nonce' );
+	if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+		wp_send_json_error( array( 'message' => 'WooCommerce inactive' ) );
+	}
+	wp_send_json_success( rasa_cart_payload() );
+}
+
+add_action( 'wp_ajax_rasa_update_cart_item', 'rasa_ajax_update_cart_item' );
+add_action( 'wp_ajax_nopriv_rasa_update_cart_item', 'rasa_ajax_update_cart_item' );
+function rasa_ajax_update_cart_item() {
+	check_ajax_referer( 'rasa-cart', 'nonce' );
+	if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+		wp_send_json_error( array( 'message' => 'WooCommerce inactive' ) );
+	}
+	$key = isset( $_POST['cart_item_key'] ) ? sanitize_text_field( wp_unslash( $_POST['cart_item_key'] ) ) : '';
+	$qty = isset( $_POST['quantity'] ) ? intval( $_POST['quantity'] ) : 0;
+	if ( $key ) {
+		if ( $qty <= 0 ) {
+			WC()->cart->remove_cart_item( $key );
+		} else {
+			WC()->cart->set_quantity( $key, $qty, true );
+		}
+	}
+	wp_send_json_success( rasa_cart_payload() );
 }
 
 /* ------------------------------------------------------------------ *

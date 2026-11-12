@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 get_header();
 
-$title = is_product_category() ? single_term_title( '', false ) : 'Produkte';
+$title = is_product_category() ? single_term_title( '', false ) : rasa_tr( 'Produkte', 'Products' );
 $orderby = isset( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : 'menu_order';
 $total = isset( $GLOBALS['wp_query']->found_posts ) ? (int) $GLOBALS['wp_query']->found_posts : 0;
 ?>
@@ -28,11 +28,11 @@ $total = isset( $GLOBALS['wp_query']->found_posts ) ? (int) $GLOBALS['wp_query']
 			<div class="facets-container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem;font-size:1.4rem;color:rgba(0,0,0,0.75);">
 				<div class="facets__form" style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
 					<span class="facets__heading" style="margin:0;font-size:1.4rem;color:rgba(0,0,0,0.75);">Filter:</span>
-					<span>Verfügbarkeit</span>
-					<span>Preis</span>
+					<span><?php echo esc_html( rasa_tr( 'Verfügbarkeit', 'Availability' ) ); ?></span>
+					<span><?php echo esc_html( rasa_tr( 'Preis', 'Price' ) ); ?></span>
 				</div>
 				<form method="get" class="facets__form" style="display:flex;align-items:center;gap:1.2rem;margin:0;">
-					<label for="SortBy" style="font-size:1.4rem;color:rgba(0,0,0,0.75);">Sortieren nach:</label>
+					<label for="SortBy" style="font-size:1.4rem;color:rgba(0,0,0,0.75);"><?php echo esc_html( rasa_tr( 'Sortieren nach:', 'Sort by:' ) ); ?></label>
 					<select name="orderby" id="SortBy" class="facet-filters__sort select__select caption-large" onchange="this.form.submit()" style="border:0;background:transparent;font-family:inherit;font-size:1.4rem;color:#000;cursor:pointer;padding-right:1.5rem;">
 						<option value="menu_order" <?php selected( $orderby, 'menu_order' ); ?>>Ausgewählt</option>
 						<option value="popularity" <?php selected( $orderby, 'popularity' ); ?>>Meistverkauft</option>
@@ -51,12 +51,13 @@ $total = isset( $GLOBALS['wp_query']->found_posts ) ? (int) $GLOBALS['wp_query']
 		<div class="product-grid-container" id="ProductGridContainer">
 			<?php if ( have_posts() ) : ?>
 				<ul id="product-grid" class="grid product-grid grid--2-col-tablet-down grid--4-col-desktop" role="list">
-					<?php while ( have_posts() ) : the_post(); ?>
+					<?php $grid_idx = 0; while ( have_posts() ) : the_post(); ?>
 						<?php
 						$product = wc_get_product( get_the_ID() );
 						if ( ! $product ) continue;
+						$grid_idx++;
 						?>
-						<li class="grid__item">
+						<li class="grid__item scroll-trigger animate--slide-in" data-cascade style="--animation-order: <?php echo (int) $grid_idx; ?>;">
 							<?php echo rasa_product_card( $product, array( 'section_id' => 'collection' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 						</li>
 					<?php endwhile; ?>

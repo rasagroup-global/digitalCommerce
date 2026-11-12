@@ -37,8 +37,10 @@ while ( have_posts() ) :
 						$full = wp_get_attachment_image_url( $img_id, 'full' );
 						$alt = get_post_meta( $img_id, '_wp_attachment_image_alt', true ) ?: $product->get_name();
 						$span = ( 0 === $idx ) ? 'grid-column:1 / -1;' : '';
+						$anim_cls = ( 0 === $idx ) ? 'scroll-trigger animate--fade-in' : 'scroll-trigger animate--slide-in';
+						$anim_attr = ( 0 === $idx ) ? '' : ' data-cascade';
 						?>
-						<div class="rasa-pdp-gallery__item" style="<?php echo esc_attr( $span ); ?>background:#efeee9;overflow:hidden;">
+						<div class="rasa-pdp-gallery__item <?php echo esc_attr( $anim_cls ); ?>"<?php echo $anim_attr; ?> style="<?php echo esc_attr( $span ); ?>background:#efeee9;overflow:hidden;--animation-order:<?php echo (int) $idx; ?>;">
 							<a href="<?php echo esc_url( $full ); ?>" target="_blank" rel="noopener">
 								<img src="<?php echo esc_url( $src ); ?>" alt="<?php echo esc_attr( $alt ); ?>" style="width:100%;height:auto;display:block;object-fit:cover;" <?php echo 0 === $idx ? 'fetchpriority="high"' : 'loading="lazy"'; ?>>
 							</a>
@@ -49,7 +51,7 @@ while ( have_posts() ) :
 
 			<!-- Right Column: Sticky Product Info (35%) -->
 			<div class="product__info-wrapper grid__item" style="flex: 1 1 35%; max-width: 35%; padding-left: 5rem;">
-				<section class="product__info-container product__column-sticky">
+				<section class="product__info-container product__column-sticky scroll-trigger animate--slide-in">
 					<p style="margin:0 0 .4rem;font-size:1.2rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(18,18,18,.75);">Rasa Kopi</p>
 
 					<div class="product__title">
@@ -63,8 +65,8 @@ while ( have_posts() ) :
 					</div>
 
 					<div class="rasa-price-note" style="font-size:1.2rem;line-height:1.6;color:rgba(0,0,0,0.75);margin-bottom:2rem;">
-						<div>inkl. MwSt., zzgl. <a href="<?php echo esc_url( $shipping_url ); ?>" style="color:inherit;text-decoration:underline;text-underline-offset:.3rem;">Versandkosten</a></div>
-						<div>Lieferzeit: 3–7 Werktage</div>
+						<div><?php echo esc_html( rasa_tr( 'inkl. MwSt., zzgl.', 'incl. VAT, plus' ) ); ?> <a href="<?php echo esc_url( $shipping_url ); ?>" style="color:inherit;text-decoration:underline;text-underline-offset:.3rem;"><?php echo esc_html( rasa_tr( 'Versandkosten', 'shipping' ) ); ?></a></div>
+						<div><?php echo esc_html( rasa_tr( 'Lieferzeit: 3–7 Werktage', 'Delivery time: 3–7 business days' ) ); ?></div>
 					</div>
 
 					<form class="cart" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype="multipart/form-data" id="RasaPdpForm">
@@ -103,12 +105,12 @@ while ( have_posts() ) :
 							</div>
 						<?php endif; ?>
 
-						<div class="product-form__input product-form__quantity" style="margin-bottom:2rem;">
-							<label class="form__label" for="RasaQty" style="display:block;font-size:1.3rem;margin-bottom:.6rem;color:rgba(0,0,0,0.75);">Anzahl</label>
-							<div class="quantity" style="width:14.2rem;height:4.7rem;border:1px solid rgba(0,0,0,0.55);display:flex;align-items:center;background:#f3f3f3;">
-								<button type="button" class="quantity__button" onclick="var i=document.getElementById('RasaQty');if(i.value>1)i.value--;" aria-label="Menge verringern" style="width:4.5rem;height:100%;border:0;background:transparent;font-size:1.8rem;cursor:pointer;">−</button>
+						<div class="product-form__input product-form__quantity" style="margin-bottom:2.2rem;">
+							<label class="form__label" for="RasaQty" style="display:block;font-size:1.3rem;margin-bottom:.8rem;color:rgba(0,0,0,0.75);"><?php echo esc_html( rasa_tr( 'Anzahl', 'Quantity' ) ); ?></label>
+							<div class="quantity" style="width:14.2rem;height:4.7rem;display:flex;align-items:center;background:#f3f3f3;float:none;margin:0;">
+								<button type="button" class="quantity__button" onclick="var i=document.getElementById('RasaQty');if(i.value>1)i.value--;" aria-label="Decrease quantity" style="width:4.5rem;height:100%;border:0;background:transparent;font-size:1.8rem;cursor:pointer;">−</button>
 								<input id="RasaQty" class="quantity__input" type="number" name="quantity" min="1" value="1" style="width:100%;text-align:center;border:0;background:transparent;font-size:1.4rem;font-family:inherit;-moz-appearance:textfield;">
-								<button type="button" class="quantity__button" onclick="var i=document.getElementById('RasaQty');i.value++;" aria-label="Menge erhöhen" style="width:4.5rem;height:100%;border:0;background:transparent;font-size:1.8rem;cursor:pointer;">+</button>
+								<button type="button" class="quantity__button" onclick="var i=document.getElementById('RasaQty');i.value++;" aria-label="Increase quantity" style="width:4.5rem;height:100%;border:0;background:transparent;font-size:1.8rem;cursor:pointer;">+</button>
 							</div>
 						</div>
 
@@ -116,18 +118,19 @@ while ( have_posts() ) :
 						<?php if ( $is_variable ) : ?>
 						<input type="hidden" name="product_id" value="<?php echo (int) $product->get_id(); ?>">
 						<?php endif; ?>
+						<div id="RasaPdpError" role="alert" hidden style="margin:0 0 1.2rem;padding:1rem 1.4rem;border:1px solid #c62828;background:#fff5f5;color:#b71c1c;font-size:1.3rem;line-height:1.5;"></div>
 						<button type="submit" name="add-to-cart" value="<?php echo (int) $product->get_id(); ?>" class="product-form__submit button button--full-width button--primary" style="width:100%;min-height:4.9rem;background:#121212;color:#ffffff;font-size:1.5rem;letter-spacing:.1rem;border:0;cursor:pointer;">
-							In den Warenkorb legen
+							<?php echo esc_html( rasa_tr( 'In den Warenkorb legen', 'Add to cart' ) ); ?>
 						</button>
 					</form>
 
 					<!-- EU Statutory Warranty Notice -->
-					<div class="rasa-eu-notice" style="margin-top:1.8rem;padding-top:1.4rem;border-top:1px solid rgba(18,18,18,.12);">
-						<p style="margin:0 0 .8rem;font-size:1.4rem;font-weight:600;color:#000;">Gesetzliche Gewährleistung</p>
+					<div class="rasa-eu-notice" style="margin-top:2.4rem;padding-top:2rem;border-top:1px solid rgba(18,18,18,.12);">
+						<p style="margin:0 0 1.2rem;font-size:1.4rem;font-weight:600;color:rgba(0,0,0,0.75);"><?php echo esc_html( rasa_tr( 'Gesetzliche Gewährleistung', 'Statutory Warranty' ) ); ?></p>
 						<a href="https://europa.eu/youreurope/garantien" target="_blank" rel="noopener noreferrer" style="display:inline-block;">
 							<img src="https://cdn.shopify.com/s/files/1/0901/3388/9407/files/EU-Gewaehrleistung-Hinweis-DE.png?v=1791724559&width=640" alt="Gesetzliche Gewährleistung" style="max-width:320px;width:100%;height:auto;border:1px solid #ddd;display:block;" loading="lazy">
 						</a>
-						<p style="margin:.8rem 0 0;font-size:1.3rem;color:rgba(0,0,0,0.75);">Mehr zu Ihren Rechten: <a href="https://europa.eu/youreurope/garantien" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;">europa.eu/youreurope/garantien</a></p>
+						<p style="margin:.8rem 0 0;font-size:1.3rem;color:rgba(0,0,0,0.75);"><?php echo esc_html( rasa_tr( 'Mehr zu Ihren Rechten:', 'More about your rights:' ) ); ?> <a href="https://europa.eu/youreurope/garantien" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;">europa.eu/youreurope/garantien</a></p>
 					</div>
 
 					<!-- Product Description -->
@@ -139,7 +142,7 @@ while ( have_posts() ) :
 					<div class="share-button" style="margin-top:2rem;">
 						<button type="button" class="share-button__button" onclick="if(navigator.share){navigator.share({title:document.title,url:location.href});}else{navigator.clipboard.writeText(location.href);}" style="background:transparent;border:0;padding:0;display:inline-flex;align-items:center;gap:.6rem;font-size:1.4rem;color:#000;cursor:pointer;font-family:inherit;">
 							<?php echo rasa_icon_raw( 'share' ); ?>
-							<span>Teilen</span>
+							<span><?php echo esc_html( rasa_tr( 'Teilen', 'Share' ) ); ?></span>
 						</button>
 					</div>
 				</section>

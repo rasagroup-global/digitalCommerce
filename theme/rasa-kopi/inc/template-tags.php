@@ -33,9 +33,9 @@ function rasa_icon_raw( $name ) {
 function rasa_announcements() {
 	// Persis live shop.rasakopi.coffee (rasa-marquee, 3 pesan)
 	$items = array(
-		array( 'text' => 'Kostenloser Versand ab 59 € in Deutschland', 'link' => home_url( '/versand-zahlung/' ) ),
-		array( 'text' => 'Lieferung in 3–7 Werktagen', 'link' => home_url( '/versand-zahlung/' ) ),
-		array( 'text' => 'Sicher bezahlen mit PayPal, Klarna, Apple Pay & Google Pay', 'link' => '' ),
+		array( 'text' => rasa_tr( 'Kostenloser Versand ab 59 € in Deutschland', 'Free shipping over €59 in Germany' ), 'link' => home_url( '/versand-zahlung/' ) ),
+		array( 'text' => rasa_tr( 'Lieferung in 3–7 Werktagen', 'Delivery in 3–7 business days' ), 'link' => home_url( '/versand-zahlung/' ) ),
+		array( 'text' => rasa_tr( 'Sicher bezahlen mit PayPal, Klarna, Apple Pay & Google Pay', 'Secure payment with PayPal, Klarna, Apple Pay & Google Pay' ), 'link' => '' ),
 	);
 	// override dari customizer
 	$custom = get_theme_mod( 'rasa_announcements', array() );
@@ -258,7 +258,7 @@ function rasa_featured_collection( $args = array() ) {
 				}
 			</style>
 			<div class="collection__title title-wrapper title-wrapper--no-top-margin page-width">
-				<div class="collection__title-text">
+				<div class="collection__title-text scroll-trigger animate--slide-in">
 					<h2 class="title inline-richtext h2"><?php echo wp_kses_post( $a['title'] ); ?></h2>
 				</div>
 				<?php if ( $a['show_view_all'] && $cat_id > 0 ) : ?>
@@ -273,14 +273,14 @@ function rasa_featured_collection( $args = array() ) {
 			<div class="page-width-desktop">
 				<div class="grid product-grid contains-card contains-card--product grid--<?php echo (int) $a['columns_desktop']; ?>-col-desktop grid--<?php echo (int) $a['columns_mobile']; ?>-col-tablet-down">
 					<?php if ( $products ) : ?>
-						<?php foreach ( $products as $p ) : ?>
-							<div class="grid__item">
+						<?php foreach ( $products as $idx => $p ) : ?>
+							<div class="grid__item scroll-trigger animate--slide-in" data-cascade style="--animation-order: <?php echo (int) ( $idx + 1 ); ?>;">
 								<?php echo rasa_product_card( $p, array( 'section_id' => $a['section_id'] ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 							</div>
 						<?php endforeach; ?>
 					<?php else : ?>
 						<?php for ( $i = 0; $i < $a['products_to_show']; $i++ ) : ?>
-							<div class="grid__item">
+							<div class="grid__item scroll-trigger animate--slide-in" data-cascade style="--animation-order: <?php echo (int) ( $i + 1 ); ?>;">
 								<?php echo rasa_product_card_placeholder(); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 							</div>
 						<?php endfor; ?>
@@ -402,9 +402,9 @@ function rasa_main_menu_items() {
 	}
 	// Fallback: menu live Shopify
 	return array(
-		array( 'title' => 'Startseite', 'url' => home_url( '/' ), 'children' => array(), 'current' => is_front_page() ),
-		array( 'title' => 'Produkte',   'url' => home_url( '/shop/' ), 'children' => array(), 'current' => function_exists( 'is_shop' ) && is_shop() || is_product() || is_product_category() ),
-		array( 'title' => 'Kontakt',    'url' => home_url( '/kontakt/' ), 'children' => array(), 'current' => is_page( 'kontakt' ) ),
+		array( 'title' => rasa_tr( 'Startseite', 'Home' ), 'url' => home_url( '/' ), 'children' => array(), 'current' => is_front_page() ),
+		array( 'title' => rasa_tr( 'Produkte', 'Products' ), 'url' => home_url( '/shop/' ), 'children' => array(), 'current' => function_exists( 'is_shop' ) && is_shop() || is_product() || is_product_category() ),
+		array( 'title' => rasa_tr( 'Kontakt', 'Contact' ), 'url' => home_url( '/kontakt/' ), 'children' => array(), 'current' => is_page( 'kontakt' ) ),
 		array( 'title' => 'B2B',        'url' => home_url( '/#b2b' ), 'children' => array(), 'current' => false ),
 	);
 }
@@ -439,19 +439,19 @@ function rasa_footer_menu_items( $location ) {
 	}
 	if ( $location === 'footer-rasa' ) {
 		return array(
-			array( 'title' => 'Partner-Röstereien', 'url' => home_url( '/partner-roestereien/' ) ),
+			array( 'title' => rasa_tr( 'Partner-Röstereien', 'Partner Roasteries' ), 'url' => home_url( '/partner-roestereien/' ) ),
 			array( 'title' => 'B2B', 'url' => home_url( '/#b2b' ) ),
 		);
 	}
 	// footer-legal fallback (menu live)
 	return array(
-		array( 'title' => 'Impressum', 'url' => home_url( '/impressum/' ) ),
-		array( 'title' => 'AGB', 'url' => home_url( '/agb/' ) ),
-		array( 'title' => 'Widerrufsbelehrung', 'url' => home_url( '/widerrufsbelehrung/' ) ),
-		array( 'title' => 'Datenschutz', 'url' => home_url( '/datenschutz/' ) ),
-		array( 'title' => 'Versand & Zahlung', 'url' => home_url( '/versand-zahlung/' ) ),
-		array( 'title' => 'Kontakt', 'url' => home_url( '/kontakt/' ) ),
+		array( 'title' => rasa_tr( 'Impressum', 'Imprint' ), 'url' => home_url( '/impressum/' ) ),
+		array( 'title' => rasa_tr( 'AGB', 'Terms & Conditions' ), 'url' => home_url( '/agb/' ) ),
+		array( 'title' => rasa_tr( 'Widerrufsbelehrung', 'Cancellation Policy' ), 'url' => home_url( '/widerrufsbelehrung/' ) ),
+		array( 'title' => rasa_tr( 'Datenschutz', 'Privacy Policy' ), 'url' => home_url( '/datenschutz/' ) ),
+		array( 'title' => rasa_tr( 'Versand & Zahlung', 'Shipping & Payment' ), 'url' => home_url( '/versand-zahlung/' ) ),
+		array( 'title' => rasa_tr( 'Kontakt', 'Contact' ), 'url' => home_url( '/kontakt/' ) ),
 		array( 'title' => 'FAQ', 'url' => home_url( '/faq/' ) ),
-		array( 'title' => 'Cookie-Einstellungen', 'url' => '#cookie-einstellungen' ),
+		array( 'title' => rasa_tr( 'Cookie-Einstellungen', 'Cookie Settings' ), 'url' => '#cookie-einstellungen' ),
 	);
 }
