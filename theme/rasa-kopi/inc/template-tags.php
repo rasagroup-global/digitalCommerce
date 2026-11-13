@@ -65,7 +65,7 @@ function rasa_price_html( $product, $args = array() ) {
 		if ( $min > 0 && $min === $max ) {
 			$price_html = $fmt( $min );
 		} elseif ( $min > 0 ) {
-			$price_html = 'Von ' . $fmt( $min );
+			$price_html = esc_html( rasa_tr( 'Von ', 'From ' ) ) . $fmt( $min );
 		} else {
 			$price_html = '';
 		}
@@ -74,12 +74,12 @@ function rasa_price_html( $product, $args = array() ) {
 		$sale    = $product->get_sale_price() !== '' ? (float) $product->get_sale_price() : 0;
 		$price   = $sale > 0 ? $sale : $regular;
 		if ( $on_sale && $show_compare ) {
-			$price_html = '<span class="visually-hidden visually-hidden--inline">Normaler Preis</span>'
+			$price_html = '<span class="visually-hidden visually-hidden--inline">' . esc_html( rasa_tr( 'Normaler Preis', 'Regular price' ) ) . '</span>'
 				. '<span><s class="price-item price-item--regular">' . wp_kses_post( $fmt( $regular ) ) . '</s></span>'
-				. '<span class="visually-hidden visually-hidden--inline">Verkaufspreis</span>'
+				. '<span class="visually-hidden visually-hidden--inline">' . esc_html( rasa_tr( 'Verkaufspreis', 'Sale price' ) ) . '</span>'
 				. '<span class="price-item price-item--sale price-item--last">' . wp_kses_post( $fmt( $sale ) ) . '</span>';
 		} else {
-			$price_html = '<span class="visually-hidden visually-hidden--inline">Normaler Preis</span>'
+			$price_html = '<span class="visually-hidden visually-hidden--inline">' . esc_html( rasa_tr( 'Normaler Preis', 'Regular price' ) ) . '</span>'
 				. '<span class="price-item price-item--regular price-item--last">' . wp_kses_post( $fmt( $price ) ) . '</span>';
 		}
 	}
@@ -91,7 +91,6 @@ function rasa_price_html( $product, $args = array() ) {
 	<div class="price">
 		<div class="price__container">
 			<div class="price__regular">
-				<span class="visually-hidden visually-hidden--inline">Normaler Preis</span>
 				<span class="price-item price-item--regular">
 					<?php echo wp_kses_post( $price_html ); ?>
 				</span>

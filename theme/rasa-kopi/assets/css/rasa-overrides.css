@@ -134,7 +134,7 @@ details-modal > details:not([open]) > .search-modal {
 	margin-top: 0.2rem;
 	font-weight: 400;
 }
-html[lang^="en"] .card-information .price::after {
+body.rasa-lang-en .card-information .price::after {
 	content: 'incl. VAT, plus shipping';
 }
 
@@ -324,10 +324,31 @@ html[lang^="en"] .card-information .price::after {
 
 /* Hide TranslatePress default floating language switcher */
 .trp-language-switcher,
+.trp-floating-switcher,
+.trp-ls-dropdown,
 #trp-floater-ls,
 .trp-floating-language-switcher,
 [data-no-translation] #trp-floater-ls {
 	display: none !important;
 	visibility: hidden !important;
 	pointer-events: none !important;
+}
+
+/* ===== WooCommerce Cart / Checkout / Page Full-Width Fix ===== */
+.rasa-page-article,
+.article__content.rte,
+.wp-block-woocommerce-cart,
+.wp-block-woocommerce-checkout,
+.wc-block-cart,
+.wc-block-checkout {
+	display: block !important;
+	width: 100% !important;
+	max-width: 100% !important;
+}
+.wc-block-components-button:not(.is-link),
+.wc-block-cart__submit-button,
+.wc-block-components-checkout-place-order-button {
+	background-color: #121212 !important;
+	color: #ffffff !important;
+	border-radius: 0 !important;
 }

@@ -318,20 +318,20 @@ $announcements = rasa_announcements();
 										class="search__input field__input"
 										type="search"
 										name="s"
-										aria-label="<?php esc_attr_e( 'Suche', 'rasa-kopi' ); ?>"
+										aria-label="<?php echo esc_attr( rasa_tr( 'Suche', 'Search' ) ); ?>"
 										autocapitalize="off"
 										autocomplete="off"
 										autocorrect="off"
-										placeholder="<?php esc_attr_e( 'Produkte durchsuchen…', 'rasa-kopi' ); ?>"
+										placeholder="<?php echo esc_attr( rasa_tr( 'Produkte durchsuchen…', 'Search products…' ) ); ?>"
 										required
 									>
-									<label class="field__label" for="Search-In-Modal"><?php esc_html_e( 'Suche', 'rasa-kopi' ); ?></label>
-									<button class="search__button field__button" aria-label="<?php esc_attr_e( 'Suche', 'rasa-kopi' ); ?>">
+									<label class="field__label" for="Search-In-Modal"><?php echo esc_html( rasa_tr( 'Suche', 'Search' ) ); ?></label>
+									<button class="search__button field__button" aria-label="<?php echo esc_attr( rasa_tr( 'Suche', 'Search' ) ); ?>">
 										<span class="svg-wrapper"><?php echo rasa_icon_raw( 'search' ); ?></span>
 									</button>
 								</div>
 							</form>
-							<button type="button" class="search-modal__close-button modal__close-button link link--text focus-inset" aria-label="<?php esc_attr_e( 'Schließen', 'rasa-kopi' ); ?>">
+							<button type="button" class="search-modal__close-button modal__close-button link link--text focus-inset" aria-label="<?php echo esc_attr( rasa_tr( 'Schließen', 'Close' ) ); ?>">
 								<span class="svg-wrapper"><?php echo rasa_icon_raw( 'close' ); ?></span>
 							</button>
 						</div>
@@ -342,7 +342,7 @@ $announcements = rasa_announcements();
 			<!-- Account -->
 			<a href="<?php echo esc_url( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/my-account/' ) ); ?>" class="header__icon header__icon--account link focus-inset">
 				<span class="svg-wrapper"><?php echo rasa_icon_raw( 'account' ); ?></span>
-				<span class="visually-hidden"><?php esc_html_e( 'Konto', 'rasa-kopi' ); ?></span>
+				<span class="visually-hidden"><?php echo esc_html( rasa_tr( 'Konto', 'Account' ) ); ?></span>
 			</a>
 
 			<!-- Cart -->
@@ -353,12 +353,12 @@ $announcements = rasa_announcements();
 						<?php if ( $cart_count < 100 ) : ?>
 							<span aria-hidden="true"><?php echo (int) $cart_count; ?></span>
 						<?php endif; ?>
-						<span class="visually-hidden"><?php printf( esc_html__( '%s Artikel im Warenkorb', 'rasa-kopi' ), (int) $cart_count ); ?></span>
+						<span class="visually-hidden"><?php printf( esc_html( rasa_tr( '%s Artikel im Warenkorb', '%s items in cart' ) ), (int) $cart_count ); ?></span>
 					</div>
 				<?php else : ?>
 					<span class="svg-wrapper"><?php echo rasa_icon_raw( 'cart-empty' ); ?></span>
 				<?php endif; ?>
-				<span class="visually-hidden"><?php esc_html_e( 'Warenkorb', 'rasa-kopi' ); ?></span>
+				<span class="visually-hidden"><?php echo esc_html( rasa_tr( 'Warenkorb', 'Cart' ) ); ?></span>
 			</a>
 		</div>
 	</header>

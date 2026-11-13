@@ -1041,7 +1041,7 @@ class SlideshowComponent extends SliderComponent {
       } else if (this.autoplayButtonIsSetToPlay) {
         this.pause();
       }
-    } else if (this.announcementBarSlider.contains(event.target)) {
+    } else if (this.announcementBarSlider && this.announcementBarSlider.contains(event.target)) {
       this.pause();
     }
   }

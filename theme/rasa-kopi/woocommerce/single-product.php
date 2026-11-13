@@ -74,6 +74,9 @@ while ( have_posts() ) :
 							<div class="product-form__variants" style="margin-bottom:2rem;">
 								<?php foreach ( $attributes as $attr_name => $options ) :
 									$label = wc_attribute_label( $attr_name );
+									if ( strtolower( $label ) === 'size' || strtolower( $label ) === 'größe' ) {
+										$label = rasa_tr( 'Größe', 'Size' );
+									}
 									$field_name = 'attribute_' . sanitize_title( $attr_name );
 									$selected = $default_attrs[ sanitize_title( $attr_name ) ] ?? ( $options[0] ?? '' );
 									?>

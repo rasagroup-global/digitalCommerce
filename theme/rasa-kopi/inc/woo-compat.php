@@ -78,3 +78,13 @@ add_action( 'woocommerce_product_query', function ( $q ) {
 		$q->set( 'meta_query', $meta_query );
 	}
 } );
+
+/* ------------------------------------------------------------------ *
+ * Default Checkout Country = Germany (DE)
+ * ------------------------------------------------------------------ */
+add_filter( 'default_checkout_billing_country', function () {
+	return 'DE';
+} );
+add_filter( 'default_checkout_shipping_country', function () {
+	return 'DE';
+} );

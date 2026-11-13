@@ -225,59 +225,59 @@
 				.then(function (res) { if (res && res.success) renderCart(res.data); });
 		});
 
-		var cartIcon = document.getElementById('cart-icon-bubble');
-		if (cartIcon) {
-			cartIcon.addEventListener('click', function (e) {
-				e.preventDefault();
-				var fd = new FormData();
-				fd.append('action', 'rasa_get_cart');
-				fd.append('nonce', cfg.nonce || '');
-				fetch(cfg.ajaxUrl, { method: 'POST', body: fd, credentials: 'same-origin' })
-					.then(function (r) { return r.json(); })
-					.then(function (res) {
-						if (res && res.success) renderCart(res.data);
+		document.addEventListener('click', function (e) {
+			var cartIcon = e.target.closest('#cart-icon-bubble');
+			if (!cartIcon) return;
+			e.preventDefault();
+			var liveCfg = window.RasaTheme || cfg;
+			var fd = new FormData();
+			fd.append('action', 'rasa_get_cart');
+			fd.append('nonce', liveCfg.nonce || '');
+			fetch(liveCfg.ajaxUrl || '/wp-admin/admin-ajax.php', { method: 'POST', body: fd, credentials: 'same-origin' })
+				.then(function (r) { return r.json(); })
+				.then(function (res) {
+					if (res && res.success) renderCart(res.data);
+					openDrawer();
+				})
+				.catch(function () { window.location.href = cartIcon.href; });
+		});
+
+		document.addEventListener('submit', function (e) {
+			var pdpForm = e.target && e.target.id === 'RasaPdpForm' ? e.target : null;
+			if (!pdpForm) return;
+			e.preventDefault();
+			var liveCfg = window.RasaTheme || cfg;
+			var errBox = document.getElementById('RasaPdpError');
+			if (errBox) { errBox.hidden = true; errBox.textContent = ''; }
+			var submitBtn = pdpForm.querySelector('.product-form__submit');
+			var origText = submitBtn ? submitBtn.textContent : '';
+			if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.7'; }
+
+			var fd = new FormData(pdpForm);
+			fd.append('action', 'rasa_add_to_cart');
+			fd.append('nonce', liveCfg.nonce || '');
+			if (!fd.get('product_id') && fd.get('add-to-cart')) {
+				fd.set('product_id', fd.get('add-to-cart'));
+			}
+
+			fetch(liveCfg.ajaxUrl || '/wp-admin/admin-ajax.php', { method: 'POST', body: fd, credentials: 'same-origin' })
+				.then(function (r) { return r.json(); })
+				.then(function (res) {
+					if (res && res.success) {
+						renderCart(res.data);
 						openDrawer();
-					})
-					.catch(function () { window.location.href = cartIcon.href; });
-			});
-		}
-
-		var pdpForm = document.getElementById('RasaPdpForm');
-		if (pdpForm) {
-			pdpForm.addEventListener('submit', function (e) {
-				e.preventDefault();
-				var errBox = document.getElementById('RasaPdpError');
-				if (errBox) { errBox.hidden = true; errBox.textContent = ''; }
-				var submitBtn = pdpForm.querySelector('.product-form__submit');
-				var origText = submitBtn ? submitBtn.textContent : '';
-				if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.7'; }
-
-				var fd = new FormData(pdpForm);
-				fd.append('action', 'rasa_add_to_cart');
-				fd.append('nonce', cfg.nonce || '');
-				if (!fd.get('product_id') && fd.get('add-to-cart')) {
-					fd.set('product_id', fd.get('add-to-cart'));
-				}
-
-				fetch(cfg.ajaxUrl, { method: 'POST', body: fd, credentials: 'same-origin' })
-					.then(function (r) { return r.json(); })
-					.then(function (res) {
-						if (res && res.success) {
-							renderCart(res.data);
-							openDrawer();
-						} else {
-							var msg = (res && res.data && res.data.message) ? res.data.message : 'Produkt konnte nicht in den Warenkorb gelegt werden.';
-							if (errBox) { errBox.textContent = msg; errBox.hidden = false; }
-						}
-					})
-					.catch(function () {
-						pdpForm.submit();
-					})
-					.finally(function () {
-						if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; submitBtn.textContent = origText; }
-					});
-			});
-		}
+					} else {
+						var msg = (res && res.data && res.data.message) ? res.data.message : 'Produkt konnte nicht in den Warenkorb gelegt werden.';
+						if (errBox) { errBox.textContent = msg; errBox.hidden = false; }
+					}
+				})
+				.catch(function () {
+					pdpForm.submit();
+				})
+				.finally(function () {
+					if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; submitBtn.textContent = origText; }
+				});
+		});
 	}
 
 	if (document.readyState === 'loading') {

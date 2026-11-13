@@ -261,8 +261,8 @@ function rasa_assets() {
 		$dep = array( $handle );
 	}
 
-	// 7. Localize: URL penting utk JS
-	wp_localize_script( 'rasa-js-global', 'RasaTheme', array(
+	// 7. Localize: URL penting utk JS (attach ke rasa-js-rasa-shim agar tersedia sejak awal)
+	wp_localize_script( 'rasa-js-rasa-shim', 'RasaTheme', array(
 		'homeUrl'      => home_url( '/' ),
 		'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
 		'cartUrl'      => function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '#',
@@ -490,9 +490,66 @@ function rasa_ajax_update_cart_item() {
 function rasa_body_class( $classes ) {
 	$classes[] = 'color-scheme-1';
 	$classes[] = 'page-width-constrain';
+	$classes[] = 'rasa-lang-' . rasa_current_lang();
 	return $classes;
 }
 add_filter( 'body_class', 'rasa_body_class' );
+
+/* ------------------------------------------------------------------ *
+ * Fallback route /kontakt/ jika halaman WP belum dibuat
+ * ------------------------------------------------------------------ */
+add_action( 'template_redirect', function () {
+	if ( ! is_404() ) return;
+	$path = trim( (string) wp_parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
+	if ( $path !== 'kontakt' && $path !== 'en/kontakt' ) return;
+
+	status_header( 200 );
+	$GLOBALS['wp_query']->is_404 = false;
+	$GLOBALS['wp_query']->is_page = true;
+
+	$sent = false;
+	if ( $_SERVER['REQUEST_METHOD'] === 'POST' && isset( $_POST['rasa_contact_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rasa_contact_nonce'] ) ), 'rasa_contact' ) ) {
+		$email = isset( $_POST['contact_email'] ) ? sanitize_email( wp_unslash( $_POST['contact_email'] ) ) : '';
+		$name  = isset( $_POST['contact_name'] ) ? sanitize_text_field( wp_unslash( $_POST['contact_name'] ) ) : '';
+		$msg   = isset( $_POST['contact_body'] ) ? sanitize_textarea_field( wp_unslash( $_POST['contact_body'] ) ) : '';
+		if ( $email && $msg ) {
+			@wp_mail( get_option( 'admin_email' ), 'Rasa Kopi Kontakt: ' . $name, "From: $name <$email>\n\n$msg" );
+			$sent = true;
+		}
+	}
+
+	get_header();
+	?>
+	<div class="color-scheme-2 gradient" style="padding: 48px 0 64px;">
+		<div class="page-width" style="max-width: 72rem;">
+			<h1 class="main-page-title page-title h0" style="margin-bottom: 1.6rem;"><?php echo esc_html( rasa_tr( 'Kontakt', 'Contact' ) ); ?></h1>
+			<p style="font-size: 1.5rem; color: rgba(0,0,0,0.75); margin-bottom: 3rem;">
+				<?php echo esc_html( rasa_tr( 'Du hast Fragen zu unseren Produkten, B2B-Anfragen oder Bestellungen? Schreib uns gerne eine Nachricht.', 'Questions about our products, B2B inquiries, or orders? Feel free to send us a message.' ) ); ?>
+			</p>
+			<?php if ( $sent ) : ?>
+				<div style="padding:1.4rem 1.8rem;border:1px solid #2e7d32;background:#f1f8e9;color:#1b5e20;margin-bottom:2.4rem;font-size:1.4rem;">
+					<?php echo esc_html( rasa_tr( 'Vielen Dank für deine Nachricht! Wir melden uns schnellstmöglich.', 'Thank you for your message! We will get back to you shortly.' ) ); ?>
+				</div>
+			<?php endif; ?>
+			<form method="post" action="" style="display:grid;gap:1.6rem;">
+				<?php wp_nonce_field( 'rasa_contact', 'rasa_contact_nonce' ); ?>
+				<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.6rem;">
+					<input type="text" name="contact_name" placeholder="<?php echo esc_attr( rasa_tr( 'Name', 'Name' ) ); ?>" style="padding:1.2rem 1.4rem;border:1px solid rgba(0,0,0,.35);font-family:inherit;font-size:1.4rem;background:#fff;">
+					<input type="email" name="contact_email" required placeholder="<?php echo esc_attr( rasa_tr( 'E-Mail *', 'Email *' ) ); ?>" style="padding:1.2rem 1.4rem;border:1px solid rgba(0,0,0,.35);font-family:inherit;font-size:1.4rem;background:#fff;">
+				</div>
+				<textarea name="contact_body" rows="5" required placeholder="<?php echo esc_attr( rasa_tr( 'Kommentar *', 'Comment *' ) ); ?>" style="padding:1.2rem 1.4rem;border:1px solid rgba(0,0,0,.35);font-family:inherit;font-size:1.4rem;background:#fff;"></textarea>
+				<div>
+					<button type="submit" class="button button--primary" style="min-height:4.6rem;padding:0 2.8rem;background:#121212;color:#fff;border:0;font-size:1.4rem;cursor:pointer;">
+						<?php echo esc_html( rasa_tr( 'Senden', 'Send' ) ); ?>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<?php
+	get_footer();
+	exit;
+} );
 
 /* ------------------------------------------------------------------ *
  * Include inc/
