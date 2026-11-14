@@ -10,9 +10,9 @@
 			createViewEventElement: function (Element) {
 				return Element;
 			},
-			CartLinesUpdateEvent: function () {},
-			CartErrorEvent: function () {},
-			CartNoteUpdateEvent: function () {},
+			CartLinesUpdateEvent: function () { },
+			CartErrorEvent: function () { },
+			CartNoteUpdateEvent: function () { },
 		};
 	}
 
@@ -36,17 +36,17 @@
 		document.body.appendChild(form);
 		form.submit();
 	};
-	window.Shopify.loadFeatures = window.Shopify.loadFeatures || function () {};
+	window.Shopify.loadFeatures = window.Shopify.loadFeatures || function () { };
 	window.Shopify.setSelectorByValue = window.Shopify.setSelectorByValue || function (id, value) {
 		var el = document.getElementById(id);
 		if (el) el.value = value;
 	};
-	window.Shopify.CountryProvinceSelector = window.Shopify.CountryProvinceSelector || function () {};
+	window.Shopify.CountryProvinceSelector = window.Shopify.CountryProvinceSelector || function () { };
 	window.Shopify.ModelViewerUI = window.Shopify.ModelViewerUI || {};
-	window.Shopify.PaymentButton = window.Shopify.PaymentButton || { init: function () {} };
+	window.Shopify.PaymentButton = window.Shopify.PaymentButton || { init: function () { } };
 	window.Shopify.actions = window.Shopify.actions || {
-		openCart: { configure: function () {} },
-		updateCart: { configure: function () {} }
+		openCart: { configure: function () { } },
+		updateCart: { configure: function () { } }
 	};
 
 	// Dawn StickyHeader (on-scroll-up: hide saat scroll down, muncul saat scroll up)
@@ -134,7 +134,7 @@
 		var subtotalEl = document.getElementById('RasaCartSubtotal');
 		var checkoutBtn = document.getElementById('RasaCartCheckoutBtn');
 		var cfg = window.RasaTheme || {};
-		if (!drawer || !bodyEl || !cfg.ajaxUrl) return;
+		if (!drawer || !bodyEl) return;
 
 		function esc(s) {
 			return String(s || '').replace(/[&<>"']/g, function (c) {
@@ -229,60 +229,61 @@
 			var cartIcon = e.target.closest('#cart-icon-bubble');
 			if (!cartIcon) return;
 			e.preventDefault();
+			e.stopPropagation();
 			var liveCfg = window.RasaTheme || cfg;
 			var fd = new FormData();
 			fd.append('action', 'rasa_get_cart');
 			fd.append('nonce', liveCfg.nonce || '');
+			openDrawer();
 			fetch(liveCfg.ajaxUrl || '/wp-admin/admin-ajax.php', { method: 'POST', body: fd, credentials: 'same-origin' })
 				.then(function (r) { return r.json(); })
 				.then(function (res) {
 					if (res && res.success) renderCart(res.data);
-					openDrawer();
-				})
-				.catch(function () { window.location.href = cartIcon.href; });
-		});
+	});
+}, true);
 
-		document.addEventListener('submit', function (e) {
-			var pdpForm = e.target && e.target.id === 'RasaPdpForm' ? e.target : null;
-			if (!pdpForm) return;
-			e.preventDefault();
-			var liveCfg = window.RasaTheme || cfg;
-			var errBox = document.getElementById('RasaPdpError');
-			if (errBox) { errBox.hidden = true; errBox.textContent = ''; }
-			var submitBtn = pdpForm.querySelector('.product-form__submit');
-			var origText = submitBtn ? submitBtn.textContent : '';
-			if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.7'; }
+document.addEventListener('submit', function (e) {
+	var pdpForm = e.target && e.target.id === 'RasaPdpForm' ? e.target : null;
+	if (!pdpForm) return;
+	e.preventDefault();
+	e.stopPropagation();
+	var liveCfg = window.RasaTheme || cfg;
+	var errBox = document.getElementById('RasaPdpError');
+	if (errBox) { errBox.hidden = true; errBox.textContent = ''; }
+	var submitBtn = pdpForm.querySelector('.product-form__submit');
+	var origText = submitBtn ? submitBtn.textContent : '';
+	if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.7'; }
 
-			var fd = new FormData(pdpForm);
-			fd.append('action', 'rasa_add_to_cart');
-			fd.append('nonce', liveCfg.nonce || '');
-			if (!fd.get('product_id') && fd.get('add-to-cart')) {
-				fd.set('product_id', fd.get('add-to-cart'));
+	var fd = new FormData(pdpForm);
+	fd.append('action', 'rasa_add_to_cart');
+	fd.append('nonce', liveCfg.nonce || '');
+	if (!fd.get('product_id') && fd.get('add-to-cart')) {
+		fd.set('product_id', fd.get('add-to-cart'));
+	}
+
+	fetch(liveCfg.ajaxUrl || '/wp-admin/admin-ajax.php', { method: 'POST', body: fd, credentials: 'same-origin' })
+		.then(function (r) { return r.json(); })
+		.then(function (res) {
+			if (res && res.success) {
+				renderCart(res.data);
+				openDrawer();
+			} else {
+				var msg = (res && res.data && res.data.message) ? res.data.message : 'Produkt konnte nicht in den Warenkorb gelegt werden.';
+				if (errBox) { errBox.textContent = msg; errBox.hidden = false; }
 			}
-
-			fetch(liveCfg.ajaxUrl || '/wp-admin/admin-ajax.php', { method: 'POST', body: fd, credentials: 'same-origin' })
-				.then(function (r) { return r.json(); })
-				.then(function (res) {
-					if (res && res.success) {
-						renderCart(res.data);
-						openDrawer();
-					} else {
-						var msg = (res && res.data && res.data.message) ? res.data.message : 'Produkt konnte nicht in den Warenkorb gelegt werden.';
-						if (errBox) { errBox.textContent = msg; errBox.hidden = false; }
-					}
-				})
-				.catch(function () {
-					pdpForm.submit();
-				})
-				.finally(function () {
-					if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; submitBtn.textContent = origText; }
-				});
+		})
+		.catch(function () {
+			pdpForm.submit();
+		})
+		.finally(function () {
+			if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; submitBtn.textContent = origText; }
 		});
+		}, true);
 	}
 
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', initRasaCartDrawer);
-	} else {
-		initRasaCartDrawer();
-	}
-})();
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', initRasaCartDrawer);
+} else {
+	initRasaCartDrawer();
+}
+}) ();

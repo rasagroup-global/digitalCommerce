@@ -352,3 +352,10 @@ body.rasa-lang-en .card-information .price::after {
 	color: #ffffff !important;
 	border-radius: 0 !important;
 }
+
+/* ===== Hide default WooCommerce storefront alert/notice banners ===== */
+body:not(.woocommerce-checkout):not(.woocommerce-account) .woocommerce-notices-wrapper,
+body:not(.woocommerce-checkout):not(.woocommerce-account) .woocommerce-message,
+body:not(.woocommerce-checkout):not(.woocommerce-account) .woocommerce-info {
+	display: none !important;
+}

@@ -26,8 +26,6 @@ while ( have_posts() ) :
 	$shipping_url = home_url( '/versand-zahlung/' );
 	?>
 	<section class="page-width section-main-product" style="padding-top: 36px; padding-bottom: 48px;">
-		<?php wc_print_notices(); ?>
-
 		<div class="product product--large product--left product--stacked grid grid--1-col grid--2-col-tablet">
 			<!-- Left Column: Stacked Gallery (65%) -->
 			<div class="grid__item product__media-wrapper" style="flex: 0 0 65%; max-width: 65%;">

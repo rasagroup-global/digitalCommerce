@@ -49,10 +49,12 @@ add_filter( 'woocommerce_pagination', function ( $html ) {
 
 /* ------------------------------------------------------------------ *
  * Add-to-cart AJAX redirect — tetap di halaman (cart drawer)
+ * & hapus alert notice bawaan WooCommerce ("added to your cart")
  * ------------------------------------------------------------------ */
 add_filter( 'woocommerce_add_to_cart_redirect', function () {
 	return wp_get_referer() ? wp_get_referer() : home_url( '/' );
 } );
+add_filter( 'wc_add_to_cart_message_html', '__return_empty_string' );
 
 /* ------------------------------------------------------------------ *
  * Cart page
